@@ -9,7 +9,7 @@ import { resolve } from 'path'
 const projectRoot = process.env.PROJECT_ROOT || import.meta.dirname
 
 const repoName = process.env.GITHUB_REPOSITORY?.split("/")[1];
-const repositoryBase = process.env.VITE_BASE_PATH || (repoName ? `/${repoName}/` : "/initmd-lightweight-a/");
+const repositoryBase = process.env.VITE_BASE_PATH || (repoName ? `/${repoName}/` : "/init.md/");
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({

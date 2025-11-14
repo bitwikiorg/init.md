@@ -176,6 +176,7 @@ Conclude rehearsal with a blueprint.
 
 **Steps:**
 - **Description**: Draft the intended INIT_CONTEXT_SNAPSHOT.md.
-  - **Action**: Define directory tree, metrics headings, and context catalog.`
+  - **Action**: Define directory tree, metrics headings, and context catalog.
+  `
   }
 ]

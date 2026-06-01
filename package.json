@@ -62,7 +62,7 @@
         "react": "^19.2.5",
         "react-day-picker": "^10.0.1",
         "react-dom": "^19.2.3",
-        "react-error-boundary": "^6.1.1",
+        "react-error-boundary": "^6.1.2",
         "react-hook-form": "^7.74.0",
         "react-resizable-panels": "^4.11.2",
         "recharts": "^3.8.1",

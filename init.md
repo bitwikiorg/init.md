@@ -1,187 +1,251 @@
-# init.md — Minimal Initialization Protocol
+# init.md — General Operational Initialization Protocol
 
-**Audience**
-- Humans: understand what this is and how to adapt it safely.
-- Agents: parse this structure to move from cold start to "READY" with minimal side effects.
+`init.md` is a human- and machine-readable procedure for inspecting a target, determining what it requires, applying the appropriate initialization pattern, validating the result, and reporting its operational state.
 
-**Conventions**
-- `description`: human-readable explanation
-- `command`: a safe, minimal shell probe (optional; prefer safer alternatives)
-- `action`: a conceptual step the agent performs internally
-- `policy`: a guardrail or constraint that must be followed
-- `source`: canonical reference for verification or traceability
-- `output_path`: target path for generated artifacts (never raw secrets)
-- `await_instructions`: whether to pause for operator input
+It is not one fixed scaffold. It does not assume that every target is a server, repository, AI agent, application, or development project. Templates provide concrete initialization patterns for specific target types, while this root protocol remains general.
 
-## INIT_SEQUENCE
+## 1. Purpose
 
-### HOST_PREFLIGHT
-Establish a basic understanding of the host and clock alignment without mutating the system.
+Use this protocol to determine what a target needs in order to become operational.
 
-**Steps:**
-- **Description**: Note OS family and kernel; ensure basic toolchain compatibility.
-  - **Action**: Read /etc/os-release and os.release() via safe file reads or APIs.
-  - **Source**: OS_INFO
+The target may be new, incomplete, misconfigured, inactive, restored from a previous state, or being started in a new environment. Initialization succeeds when the relevant requirements have been inspected, created or configured when applicable, validated, and reported clearly.
 
-- **Description**: Confirm time coherence (NTP/clock drift) for consistent logs and metrics.
-  - **Action**: Inspect prior timing notes or safe system time APIs (no privileged writes).
-  - **Source**: SYSTEM_TIME_INFO
+## 2. Target
 
-### RESOURCE_BASELINE
-Draft a provisional resource profile to guide conservative concurrency.
+Before selecting an initialization pattern, identify the target without prescribing its type.
 
-**Steps:**
-- **Description**: Capture approximate CPU cores, memory, storage headroom.
-  - **Action**: Gather from safe APIs or cached diagnostics; avoid invasive polling.
-  - **Source**: SYSTEM_HARDWARE_METRICS
+Record:
 
-- **Description**: Flag potential bottlenecks (disk saturation, elevated load).
-  - **Action**: Set soft thresholds for warnings; do not enforce limits here.
-  - **Source**: SYSTEM_PERFORMANCE_METRICS
+- what is being initialized;
+- its intended function;
+- its current location or environment;
+- its expected users or operators;
+- its desired operational result;
+- any explicit constraints supplied by the user, project, or environment.
 
-### TOOL_DISCOVERY_AND_API_POLICY
-Enumerate available tools/adapters and state strict routing policies.
+Target examples include software projects, repositories, AI agents, servers, services, workspaces, research environments, data pipelines, applications, tools, local directories, remote environments, and existing systems requiring restoration or reconfiguration.
 
-**Steps:**
-- **Description**: Load tool registry/capability matrix if present.
-  - **Action**: Parse a tool schema file into memory (if available).
-  - **Source**: TOOL_SCHEMA
+## 3. Initialization Modes
 
-- **Description**: Enforce API routing rules to maintain safety and provenance.
-  - **Policy**:
-    - Web search must use the designated search adapter.
-    - REST calls must use approved HTTP clients/infrastructure modules.
-    - Do not proxy REST via generic web fetchers not designed for it.
-    - Prefer dedicated file tools for reading large or varied file types.
-  - **Source**: API_ROUTING_POLICY
+Modes describe how the procedure should behave. A template may support one or more modes, and may define additional modes when useful.
 
-### SECRET_MANAGEMENT
-Handle credentials securely; never hardcode secrets or read from arbitrary files.
+### Active
 
-**Steps:**
-- **Description**: Retrieve credentials via a vault or approved secret manager.
-  - **Action**: Load secrets into memory only; do not write to disk; no .env mutation at runtime.
-  - **Source**: SECURE_VAULT
+Inspect the target and perform applicable initialization work.
 
-- **Description**: Confirm private key and secret storage permissions (conceptually if needed).
-  - **Action**: Validate intended permission posture; log discrepancies for remediation.
-  - **Source**: SECRET_STORAGE_PERMISSIONS
+### Dry run
 
-### NETWORK_SECURITY
-Understand intended firewall posture and scanning plans; avoid active mutations by default.
+Inspect the target, determine requirements, and report proposed work without changing the target.
 
-**Steps:**
-- **Description**: Record which ports/services should be open/closed.
-  - **Action**: Log planned firewall narrative; do not apply changes here.
-  - **Source**: FIREWALL_POLICY
+### Repair
 
-- **Description**: Outline future security scanning cadence and tooling.
-  - **Action**: Specify scanners (SAST/DAST/dependency audit) and ownership for activation later.
-  - **Source**: SECURITY_SCANNER_PLAN
+Inspect an existing target, identify missing or invalid initialization elements, and correct what applies.
 
-### CONTEXT_LOADING
-Prime memory with configuration, docs, and project context.
+### Reinitialize
 
-**Steps:**
-- **Description**: Identify and list context files (md/json/yml) and their purposes.
-  - **Action**: Build an in-memory index; avoid loading large binaries.
-  - **Source**: FILE_SYSTEM_SCAN
+Re-evaluate an already initialized target after substantial changes to its purpose, environment, dependencies, ownership, or operating model.
 
-- **Description**: Load essential configs/prompts/docs into a fast in-memory map.
-  - **Action**: Parse select files into a structured cache; skip raw secrets.
-  - **Source**: PARSED_CONTEXT_FILES
+## 4. General Procedure
 
-- **Description**: Persist the context map for quick restoration if permitted.
-  - **Action**: Serialize context summary (not raw contents) to a snapshot file.
-  - **Output Path**: ./cache/context.snapshot.json
-  - **Source**: SERIALIZED_CONTEXT_MAP
+Follow the same high-level sequence for every target. The implementation details come from the target and selected template.
 
-- **Description**: Inventory key scripts/utilities for operational awareness.
-  - **Action**: List notable scripts and their intended roles.
-  - **Source**: SCRIPT_INVENTORY
+### `INSPECT`
 
-### CODE_GOVERNANCE_AND_STATE
-Reinforce auditability and data hygiene.
+Determine:
 
-**Steps:**
-- **Description**: Capture semantic diffs for any code mutations.
-  - **Policy**: Append diffs to ./logs/code_history/<timestamp>.patch when changes occur.
-  - **Source**: VERSION_CONTROL_POLICY
+- what exists;
+- what the target appears to be;
+- what instructions and configuration already exist;
+- what is complete;
+- what is missing;
+- what is contradictory;
+- what can be reused.
 
-- **Description**: Protect templates and historical scripts.
-  - **Policy**: Deletions require an explicit purge flag acknowledged by the operator.
-  - **Source**: CODE_RETENTION_POLICY
+Inspection must be relevant to the target. Do not scan unrelated files, directories, systems, or infrastructure without reason.
 
-- **Description**: Plan backup strategy for data directories.
-  - **Action**: Define sync flow to backup target; defer execution until approved.
-  - **Source**: BACKUP_STRATEGY
+### `DETERMINE`
 
-- **Description**: Plan cache hygiene.
-  - **Action**: Age-out files older than 7 days; confirm before enabling in production.
-  - **Source**: CACHE_POLICY
+Determine:
 
-- **Description**: Plan telemetry/logging fan-out.
-  - **Action**: Describe how logs will forward to centralized sinks when configured.
-  - **Source**: CENTRALIZED_LOGGING_PLAN
+- the target's operational requirements;
+- which initialization pattern applies;
+- which files, directories, dependencies, settings, tools, or services are required;
+- which existing artifacts should remain unchanged;
+- which outputs are useful;
+- what validation is possible.
 
-### STARTUP_VALIDATION_AND_ROLLBACK
-Define diagnostics and READY/ROLLBACK signals.
+The procedure may select one template, combine compatible template sections, or create a target-specific initialization plan.
 
-**Steps:**
-- **Description**: List lint/test/static analysis to run before READY.
-  - **Action**: Document commands and pass criteria; do not run by default.
-  - **Source**: DIAGNOSTIC_CHECKLIST
+### `CREATE`
 
-- **Description**: Define the READY signal and rollback triggers.
-  - **Action**: Specify log format and any state file changes for READY vs. ROLLBACK.
-  - **Source**: SYSTEM_READINESS_SIGNAL
+Create only what applies to the target and selected initialization pattern.
 
-### SELF_PRIMING_AND_CONTEXTUALIZATION
-Load core directives, prompts, and recent memory to ground behavior.
+Possible outputs include:
 
-**Steps:**
-- **Description**: Read core directives and instance/system prompts.
-  - **Action**: Load directives and system overview docs into working memory.
-  - **Source**: CORE_AND_PROMPTS
+- directories;
+- configuration files;
+- documentation;
+- dependency manifests;
+- agent instructions;
+- project requirements;
+- startup scripts;
+- environment examples;
+- context files;
+- snapshots;
+- tests;
+- task files;
+- data structures;
+- service definitions.
 
-- **Description**: Engage cognitive recall of recent, high-salience interactions.
-  - **Action**: Query memory adapters to assemble a current situational vector.
-  - **Source**: INTERNAL_MEMORY_RETRIEVAL
+These are examples, not universal requirements.
 
-- **Description**: Confirm priming complete and await commands.
-  - **Action**: Log completion and enter ACCEPTING state.
-  - **Source**: SELF_PRIMING_STATUS
+### `CONFIGURE`
 
-## MINIMUM_RUNTIME_CONTEXT_LOAD
+Configure required elements so they work together.
 
-Essential elements that should be present in working memory for baseline operation:
+Possible configuration includes:
 
-- Host metadata (CPU cores, RAM, IP, GPU) from cached metrics files if available.
-- Tool capability matrix (if applicable).
-- Core directives and system prompts.
-- Key scripts and docs index (paths + purposes, not raw contents).
-- Recent log excerpt or last-run context (if present).
-- Version history patches (for auditability).
-- Snapshot of context state (sanitized summary).
+- paths;
+- runtime settings;
+- dependencies;
+- scripts;
+- services;
+- tools;
+- environment variables;
+- agent instructions;
+- file relationships;
+- permissions;
+- integrations.
 
-## EXECUTION_START
+Only configure what the selected target and template require.
 
-Produce a concise, machine-readable snapshot and announce readiness.
+### `VALIDATE`
 
-**Steps:**
-- **Description**: Generate a snapshot with directory overview, metrics table, and context locations.
-  - **Action**: Create a Markdown file summarizing the environment and context (no raw contents).
-  - **Output File**: ./INIT_CONTEXT_SNAPSHOT.md
-  - **Content Structure**:
-    - Directory tree (depth 3, omit hidden/system dirs) with purposes.
-    - Metrics table: hostname, uptime, CPU cores, RAM, GPU presence, disk free %, load avg (5m), IP, timezone, last snapshot time.
-    - Key context locations (what it is, where it lives, where to learn more).
-  - **Data Principles**:
-    - Factual, minimal, human- and machine-readable.
-    - No secrets, no raw file contents.
-  - **Source**: SYSTEM_READINESS_REPORT
+Validate that the intended result is operational.
 
-- **Description**: Announce snapshot path and READY state.
-  - **Action**: Print a concise message and await further instructions.
-  - **Source**: SYSTEM_READINESS_REPORT
-  - **Await Instructions**: true
+Validation may include:
+
+- required files exist;
+- configuration parses;
+- commands execute;
+- services start;
+- dependencies resolve;
+- tests pass;
+- instructions are internally consistent;
+- expected outputs can be produced;
+- required tools are accessible.
+
+Validation must be derived from the target. Do not require server diagnostics for non-server targets. Do not declare success without a relevant validation step.
+
+### `REPORT`
+
+Report:
+
+- what target was initialized;
+- what was inspected;
+- what was created;
+- what was configured;
+- what was validated;
+- what remains incomplete;
+- what warnings or blockers remain;
+- where the important outputs are located;
+- whether the target is operational.
+
+## 5. Result States
+
+Use this small general vocabulary unless a template needs to extend it:
+
+- `OPERATIONAL`
+- `OPERATIONAL_WITH_WARNINGS`
+- `BLOCKED`
+- `DRY_RUN_COMPLETE`
+
+## 6. Conditional Agent Instructions
+
+During inspection, determine whether the target will be operated or modified by AI agents.
+
+When agent instructions are applicable:
+
+- inspect whether an `AGENTS.md` file already exists;
+- preserve valid existing instructions;
+- create an `AGENTS.md` file when it would materially improve operation and none exists;
+- derive its contents from the actual target;
+- do not install one generic `AGENTS.md` into every project;
+- do not assume different projects require identical agent instructions.
+
+Different projects should have different `AGENTS.md` files. Different targets should have different `init.md` implementations.
+
+## 7. Conditional Outputs
+
+No output file is universally required except where the selected template or target requires it.
+
+Examples:
+
+- Generate a PRD only when product requirements need to be established.
+- Generate a snapshot only when a resumable environment or system-state record is useful.
+- Generate a README only when project documentation is missing or inadequate.
+- Generate an `AGENTS.md` file only when agent operation applies.
+- Generate a server report only for server or infrastructure targets.
+- Generate a context file only when context must be externalized.
+- Generate task files only when actionable work remains.
+
+The operational artifact vocabulary for this phase includes `INIT.md`, `AGENTS.md`, `SELF.md`, `USER.md`, `TOOLS.md`, `STATE.md`, `PLAN.md`, `SNAPSHOT.md`, and project-specific specifications, configuration, indexes, or validation artifacts. Each artifact remains conditional.
+
+## 8. Existing Work
+
+Prefer adaptation over unnecessary replacement.
+
+The procedure should:
+
+- preserve relevant existing files;
+- update incomplete files when appropriate;
+- avoid generating duplicates;
+- avoid overwriting substantial user-authored work without clear reason;
+- identify conflicts before changing them;
+- reuse existing project conventions where possible.
+
+This is not a restrictive safety framework. It is basic initialization correctness.
+
+## Conventions
+
+Use a small, general vocabulary for structured steps:
+
+- `description` — what the step accomplishes;
+- `condition` — when the step applies;
+- `inspect` — what must be examined;
+- `action` — what should be created or configured;
+- `output` — any resulting artifact;
+- `validation` — how the result is checked;
+- `source` — evidence or input used;
+- `status` — resulting operational state.
+
+Do not require every field in every step. Do not make shell commands the default representation. Templates may provide commands when commands are appropriate.
+
+## Template System
+
+Templates are the concrete layer. They specialize the general procedure for a target category, mode, or operating context.
+
+Each template should declare metadata:
+
+```yaml
+name:
+target:
+purpose:
+mode:
+creates:
+configures:
+validates:
+optional_outputs:
+```
+
+Metadata describes likely behavior. It does not force universal outputs.
+
+## Final Product Statement
+
+`init.md` is not one fixed scaffold.
+
+It is a general procedure for determining what a target needs in order to become operational.
+
+Templates provide concrete initialization patterns for different targets.
+
+Inspect what exists. Determine what is needed. Create what applies. Configure what is required. Validate the result. Report what became operational.

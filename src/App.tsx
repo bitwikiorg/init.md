@@ -3,6 +3,7 @@
  * What: Orchestrates the init.md landing experience and coordinates tab routing across sections.
  * How: Uses feature components for each section and tab to stay maintainable, testable, and reusable.
  */
+import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AppHeader } from "@/components/layout/AppHeader"
 import { HeroSection } from "@/components/sections/HeroSection"
@@ -10,21 +11,24 @@ import { OverviewTab } from "@/components/tabs/OverviewTab"
 import { ContextTab } from "@/components/tabs/ContextTab"
 import { TemplatesTab } from "@/components/tabs/TemplatesTab"
 import { GuideTab } from "@/components/tabs/GuideTab"
+import { Toaster } from "@/components/ui/sonner"
 
 function App() {
+  const [activeTab, setActiveTab] = useState("overview")
+
   return (
-    <div className="min-h-screen bg-background font-sans">
-      <AppHeader />
-      <HeroSection />
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      <AppHeader onSelectTab={setActiveTab} />
+      <HeroSection onSelectTab={setActiveTab} />
 
       <main className="container mx-auto px-4 pb-12 sm:pb-16">
-        <Tabs defaultValue="overview" className="max-w-6xl mx-auto">
-          <TabsList className="grid w-full grid-cols-4 mb-6 sm:mb-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mx-auto max-w-6xl">
+          <TabsList className="mb-6 grid h-auto w-full grid-cols-2 gap-1 rounded-md border bg-card p-1 sm:mb-8 sm:grid-cols-4">
             <TabsTrigger value="overview" className="text-sm sm:text-base">
               Overview
             </TabsTrigger>
             <TabsTrigger value="context" className="text-sm sm:text-base">
-              Context
+              Protocol
             </TabsTrigger>
             <TabsTrigger value="templates" className="text-sm sm:text-base">
               Templates
@@ -52,13 +56,35 @@ function App() {
         </Tabs>
       </main>
 
-      <footer className="border-t border-border bg-card/30">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-muted-foreground">
-            <p className="mb-2">Licensed under MIT. Adapt to your environment and policies.</p>
+      <footer className="border-t border-border bg-foreground text-background">
+        <div className="container mx-auto grid gap-6 px-4 py-8 md:grid-cols-[1.4fr_1fr] md:items-center">
+          <div>
+            <p className="font-semibold">init.md</p>
+            <p className="mt-2 max-w-2xl text-sm text-background/75">
+              A general operational initialization protocol from the BITwiki ecosystem. Inspect what exists, determine
+              what is needed, create what applies, validate the result, and report what became operational.
+            </p>
           </div>
-        </div>
+          <nav className="flex flex-wrap gap-3 text-sm md:justify-end" aria-label="Footer links">
+            <a className="underline-offset-4 hover:underline" href="https://github.com/bitwikiorg/init.md" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+            <a className="underline-offset-4 hover:underline" href="https://hub.bitwiki.org/" target="_blank" rel="noreferrer">
+              BIThub
+            </a>
+            <a className="underline-offset-4 hover:underline" href="https://hub.bitwiki.org/c/platform/guides/28" target="_blank" rel="noreferrer">
+              Guides
+            </a>
+            <a className="underline-offset-4 hover:underline" href="https://bitwiki.org/" target="_blank" rel="noreferrer">
+              BITwiki
+            </a>
+            <a className="underline-offset-4 hover:underline" href="https://github.com/bitwikiorg/init.md/blob/main/LICENSE" target="_blank" rel="noreferrer">
+              MIT License
+            </a>
+          </nav>
+          </div>
       </footer>
+      <Toaster />
     </div>
   )
 }

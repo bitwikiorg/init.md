@@ -1,30 +1,52 @@
-/**
- * Why: Own the template carousel logic separately so future pages or CLIs can reuse the same data contract.
- * What: Presents gallery controls, active template content, and clipboard helpers for protocol snippets.
- * How: Consumes the shared template definitions and keeps clipboard state locally for clarity.
- */
-import { createElement, useCallback, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { CaretLeft, CaretRight, CheckCircle, Copy } from "@phosphor-icons/react"
+import { createElement, useCallback, useMemo, useState } from "react"
+import { marked } from "marked"
 import { toast } from "sonner"
+import { ArrowRight, CaretLeft, CaretRight, CheckCircle, Copy, GithubLogo } from "@phosphor-icons/react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { templates } from "@/data/templates"
+
+function stripFrontmatter(content: string) {
+  return content.replace(/^---\n[\s\S]*?\n---\n?/, "")
+}
+
+function MetadataList({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="rounded-md border bg-background p-4">
+      <h5 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">{title}</h5>
+      <ul className="space-y-2 text-sm leading-5">
+        {items.map((item) => (
+          <li key={item} className="flex gap-2">
+            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 export function TemplatesTab() {
   const [activeTemplate, setActiveTemplate] = useState(0)
   const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({})
 
+  const template = templates[activeTemplate]
+  const renderedTemplate = useMemo(
+    () => marked.parse(stripFrontmatter(template.content), { async: false }) as string,
+    [template.content],
+  )
+
   const copyToClipboard = useCallback(async (content: string, id: string) => {
     try {
       await navigator.clipboard.writeText(content)
       setCopiedStates((prev) => ({ ...prev, [id]: true }))
-      toast.success("Template copied to clipboard!")
+      toast.success("Canonical Markdown copied")
       setTimeout(() => {
         setCopiedStates((prev) => ({ ...prev, [id]: false }))
       }, 2000)
-    } catch (error) {
-      toast.error("Failed to copy to clipboard")
+    } catch {
+      toast.error("Failed to copy Markdown")
     }
   }, [])
 
@@ -38,85 +60,132 @@ export function TemplatesTab() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h3 className="text-2xl font-semibold">Template Gallery</h3>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h3 className="text-2xl font-bold">Canonical Templates</h3>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+            These cards render the Markdown files in `templates/`. The copy action copies the exact canonical file
+            content, including metadata.
+          </p>
+        </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={prevTemplate} disabled={templates.length <= 1}>
+          <Button variant="outline" size="icon" onClick={prevTemplate} disabled={templates.length <= 1} aria-label="Previous template">
             <CaretLeft size={16} />
           </Button>
-          <span className="text-sm text-muted-foreground min-w-[60px] text-center">
+          <span className="min-w-[4.5rem] text-center text-sm text-muted-foreground">
             {activeTemplate + 1} of {templates.length}
           </span>
-          <Button variant="outline" size="sm" onClick={nextTemplate} disabled={templates.length <= 1}>
+          <Button variant="outline" size="icon" onClick={nextTemplate} disabled={templates.length <= 1} aria-label="Next template">
             <CaretRight size={16} />
           </Button>
         </div>
       </div>
 
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden rounded-md border-2 shadow-none">
         <CardHeader>
-          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-            <div className="flex items-start gap-3 flex-1">
-              {createElement(templates[activeTemplate].icon, {
-                size: 24,
-                className: "text-primary flex-shrink-0 mt-0.5",
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start">
+            <div className="flex items-start gap-3">
+              {createElement(template.icon, {
+                size: 28,
+                className: "mt-1 shrink-0 text-primary",
               })}
-              <div className="flex-1 min-w-0">
-                <CardTitle className="text-xl">{templates[activeTemplate].title}</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                  {templates[activeTemplate].subtitle}
-                </p>
-                <CardDescription className="mt-3 text-sm leading-relaxed">
-                  {templates[activeTemplate].description}
+              <div>
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <Badge variant="secondary" className="rounded-sm">
+                    {template.category}
+                  </Badge>
+                  {template.metadata.mode.map((mode) => (
+                    <Badge key={mode} variant="outline" className="rounded-sm">
+                      {mode}
+                    </Badge>
+                  ))}
+                </div>
+                <CardTitle className="text-2xl">{template.metadata.name}</CardTitle>
+                <p className="mt-2 text-sm font-medium text-foreground">Target: {template.metadata.target}</p>
+                <CardDescription className="mt-3 max-w-3xl text-sm leading-6 sm:text-base">
+                  {template.description}
                 </CardDescription>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => copyToClipboard(templates[activeTemplate].content, templates[activeTemplate].id)}
-              className="flex-shrink-0"
-            >
-              {copiedStates[templates[activeTemplate].id] ? (
-                <CheckCircle size={16} className="text-accent" />
-              ) : (
-                <Copy size={16} />
-              )}
-              <span className="ml-2">Copy</span>
-            </Button>
+            <div className="flex flex-wrap gap-2 lg:justify-end">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => copyToClipboard(template.content, template.id)}
+                className="shrink-0"
+              >
+                {copiedStates[template.id] ? <CheckCircle size={16} /> : <Copy size={16} />}
+                Copy Markdown
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <a href={template.sourceUrl} target="_blank" rel="noreferrer">
+                  <GithubLogo size={16} />
+                  Source
+                </a>
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2 mt-4">
-            {templates[activeTemplate].features.map((feature) => (
-              <Badge key={feature} variant="secondary" className="text-sm sm:text-base">
+          <div className="mt-4 flex flex-wrap gap-2">
+            {template.features.map((feature) => (
+              <Badge key={feature} variant="outline" className="rounded-sm text-sm">
                 {feature}
               </Badge>
             ))}
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="bg-muted rounded-lg p-4 overflow-x-auto">
-            <pre className="text-sm font-mono whitespace-pre-wrap">
-              <code>{templates[activeTemplate].content}</code>
-            </pre>
+
+        <CardContent className="space-y-6">
+          <div className="grid gap-4 lg:grid-cols-3">
+            <MetadataList title="Creates" items={template.metadata.creates} />
+            <MetadataList title="Configures" items={template.metadata.configures} />
+            <MetadataList title="Validates" items={template.metadata.validates} />
+          </div>
+
+          <div className="rounded-md border bg-background p-4">
+            <h5 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              Optional outputs
+            </h5>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {template.metadata.optional_outputs.map((output) => (
+                <div key={output} className="rounded-sm bg-muted px-3 py-2 text-sm leading-5 break-words">
+                  {output}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-md border bg-card p-4">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <h4 className="text-lg font-semibold">Rendered Markdown</h4>
+              <a
+                href={template.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-sm font-medium underline-offset-4 hover:underline"
+              >
+                Open source file
+                <ArrowRight size={14} />
+              </a>
+            </div>
+            <div className="markdown-surface" dangerouslySetInnerHTML={{ __html: renderedTemplate }} />
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        {templates.map((template, index) => (
-          <Card
-            key={template.id}
-            className={`cursor-pointer transition-all hover:shadow-md ${index === activeTemplate ? "ring-2 ring-primary" : ""}`}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {templates.map((item, index) => (
+          <button
+            key={item.id}
+            type="button"
+            className={`rounded-md border bg-card p-4 text-left transition hover:border-foreground ${index === activeTemplate ? "border-foreground shadow-[4px_4px_0_var(--foreground)]" : ""}`}
             onClick={() => setActiveTemplate(index)}
           >
-            <CardContent className="p-3 sm:p-4">
-              <div className="flex items-center gap-2 mb-2">
-                {createElement(template.icon, { size: 18, className: "text-primary flex-shrink-0" })}
-                <h4 className="font-medium text-sm truncate">{template.title}</h4>
-              </div>
-              <p className="text-sm text-muted-foreground sm:text-base line-clamp-2 leading-relaxed">{template.subtitle}</p>
-            </CardContent>
-          </Card>
+            <div className="mb-3 flex items-center gap-2">
+              {createElement(item.icon, { size: 18, className: "shrink-0 text-primary" })}
+              <h4 className="truncate text-sm font-semibold">{item.title}</h4>
+            </div>
+            <p className="line-clamp-2 text-sm leading-5 text-muted-foreground">{item.summary}</p>
+          </button>
         ))}
       </div>
     </div>

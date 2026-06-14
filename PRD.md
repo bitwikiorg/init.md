@@ -1,86 +1,116 @@
-# init.md — Minimal initialization blueprints for agents
+# init.md — General Operational Initialization Protocol PRD
 
-A lightweight, GitHub Pages–friendly repository providing initialization protocols for AI agents to transition from cold start to ready state.
+## Product Definition
 
-**Experience Qualities:**
-1. **Minimal** — Smallest viable footprint with zero dependencies beyond GitHub Pages
-2. **Structured** — Machine-readable protocols that agents can parse and execute systematically  
-3. **Practical** — Real-world templates that users can immediately clone and adapt
+`init.md` is a human- and machine-readable procedure for inspecting a target, determining what it requires, applying the appropriate initialization pattern, validating the result, and reporting its operational state.
 
-**Complexity Level**: Content Showcase (information-focused)
-This is primarily a documentation site showcasing initialization protocols and templates, with light interactive features for template browsing.
+The repository provides the canonical general protocol, target-specific templates, and a static website for browsing and copying those templates.
 
-## Essential Features
+## Scope
 
-**Template Gallery with Interactive Preview**
-- Functionality: Carousel showcasing multiple init protocol templates for different contexts
-- Purpose: Allow users to quickly compare and select appropriate templates for their systems
-- Trigger: User visits landing page or clicks template navigation
-- Progression: Browse templates → preview content → copy template → customize for system
-- Success criteria: Users can easily identify and copy relevant templates
+This version focuses on broad target initialization. A target may be a software project, repository, AI agent, server, service, workspace, research environment, data pipeline, application, tool, local directory, remote environment, or existing system requiring restoration or reconfiguration.
 
-**GitHub Pages Integration**
-- Functionality: Automatically deploy documentation site from repository content
-- Purpose: Provide human-readable access to init protocols alongside machine-readable files
-- Trigger: Repository updates trigger automatic GitHub Pages deployment
-- Progression: Code commit → GitHub Actions → Pages deployment → live site update
-- Success criteria: Site updates automatically when repository content changes
+The project does not provide a backend, database, account system, hosted execution runtime, or automatic target execution in this version.
 
-**Machine-Readable Protocol Structure**
-- Functionality: Consistent YAML-like structure that agents can parse and execute
-- Purpose: Enable agents to systematically execute initialization sequences
-- Trigger: Agent reads init.md file during startup sequence
-- Progression: Agent parses structure → validates steps → executes initialization → reports ready state
-- Success criteria: Agents can reliably parse and execute protocols without human intervention
+## Core Model
 
-## Edge Case Handling
+The root protocol determines the initialization process:
 
-- **Missing templates**: Fallback to minimal protocol if specific template unavailable
-- **GitHub Pages failures**: Static files remain accessible even if dynamic features break  
-- **Large repositories**: Templates remain lightweight regardless of hosting repository size
-- **Version conflicts**: Templates include version compatibility notes and migration guides
+1. Inspect what exists.
+2. Determine what is needed.
+3. Create what applies.
+4. Configure what is required.
+5. Validate the result.
+6. Report what became operational.
 
-## Design Direction
+Templates define concrete initialization patterns for specific targets and modes. Target-specific requirements belong in templates rather than the root protocol.
 
-The design should feel professional and trustworthy while maintaining extreme simplicity — think technical documentation that feels approachable rather than intimidating, with clean typography and generous whitespace that helps users quickly scan and understand complex initialization procedures.
+## Template-Driven Specialization
 
-## Color Selection
+The repository includes these canonical templates:
 
-Analogous color scheme using cool blues and grays to convey technical reliability and trust, with subtle green accents for success states and completion indicators.
+- Minimal initialization.
+- Dry-run initialization.
+- Development-project initialization.
+- Agent initialization.
+- Server initialization.
 
-- **Primary Color**: Deep blue (`oklch(0.3 0.15 240)`) — conveys technical authority and reliability
-- **Secondary Colors**: Light gray (`oklch(0.95 0.02 240)`) for backgrounds and subtle blue-gray (`oklch(0.7 0.05 240)`) for secondary text
-- **Accent Color**: Success green (`oklch(0.65 0.15 140)`) for completion states and positive actions
-- **Foreground/Background Pairings**: 
-  - Primary (Deep Blue): White text (`oklch(1 0 0)`) - Ratio 8.2:1 ✓
-  - Secondary Gray: Dark gray text (`oklch(0.2 0 0)`) - Ratio 15.1:1 ✓  
-  - Accent (Success Green): White text (`oklch(1 0 0)`) - Ratio 5.8:1 ✓
-  - Background White: Primary blue text - Ratio 8.2:1 ✓
+Templates declare metadata for name, target, purpose, mode, likely created artifacts, configured elements, validation checks, and optional outputs. Metadata describes likely behavior and does not force universal output creation.
 
-## Font Selection
+## Conditional Artifact Generation
 
-Typography should emphasize clarity and scannability for technical documentation — Inter for its excellent readability at all sizes and Fira Code for code blocks to ensure perfect monospace alignment.
+Generated files are conditional. No output file is universally required except where the selected template or target requires it.
 
-- **Typographic Hierarchy**: 
-  - H1 (Page Title): Inter Bold/32px/tight letter spacing
-  - H2 (Section Headers): Inter Semibold/24px/normal spacing  
-  - H3 (Subsections): Inter Medium/18px/normal spacing
-  - Body Text: Inter Regular/16px/relaxed line height (1.6)
-  - Code Blocks: Fira Code Regular/14px/1.4 line height
-  - Navigation: Inter Medium/14px/normal spacing
+Examples:
 
-## Animations
+- Generate a README only when project documentation is missing or inadequate.
+- Generate a PRD only when product requirements need to be established.
+- Generate `AGENTS.md` only when agent operation applies.
+- Generate a snapshot only when a point-in-time record is useful.
+- Generate a server report only for server or infrastructure targets.
 
-Subtle functional animations that guide attention without being distracting — think gentle fades for template switching and smooth scrolling for navigation, maintaining a professional tone that doesn't call attention to itself.
+## Canonical Markdown Source
 
-- **Purposeful Meaning**: Smooth transitions between templates communicate progression and system responsiveness
-- **Hierarchy of Movement**: Template carousel gets priority for animation, while navigation and page transitions use minimal motion
+The Markdown files under `templates/` are the canonical source of template content. The website imports those Markdown files directly with Vite raw imports.
 
-## Component Selection
+The template browser must:
 
-- **Components**: Cards for template previews, Tabs for template navigation, Code blocks with syntax highlighting, Breadcrumbs for section navigation
-- **Customizations**: Custom template carousel component with next/previous navigation, enhanced code blocks with copy-to-clipboard functionality
-- **States**: Hover states for templates, active states for navigation, loading states for template content
-- **Icon Selection**: Phosphor icons for navigation (CaretLeft/Right for carousel, Copy for clipboard, CheckCircle for completion)
-- **Spacing**: Consistent 1rem base spacing with 2rem section gaps and 0.5rem component internal padding
-- **Mobile**: Stacked template cards on mobile with swipe navigation, collapsible navigation menu, single-column layout with full-width code blocks
+- render content from the canonical Markdown files;
+- parse and display template metadata;
+- provide source links to each Markdown file;
+- copy the exact canonical Markdown content, including metadata;
+- avoid storing complete template bodies as TypeScript strings.
+
+The build runs a template integrity check that verifies the expected template files and metadata fields exist.
+
+## Website Requirements
+
+The website is a static Vite and React application deployed through GitHub Pages. It preserves the template browser, copy-to-clipboard behavior, and the Overview, Protocol, Templates, and Guide structure.
+
+The public interface should communicate:
+
+- `init.md` is not one fixed scaffold;
+- the six-stage initialization process;
+- the relationship between the root protocol and templates;
+- conditional generated outputs;
+- target-specific agent instructions;
+- BIThub as the discussion and contribution destination.
+
+## BITwiki And BIThub Integration
+
+The visual and editorial system should align with the BITwiki ecosystem through strong black, white, and neutral structure, high-contrast typography, geometric protocol surfaces, restrained accents, and precise technical language.
+
+Required public links:
+
+- GitHub repository: <https://github.com/bitwikiorg/init.md>
+- BIThub forum: <https://hub.bitwiki.org/>
+- BIThub Guides: <https://hub.bitwiki.org/c/platform/guides/28>
+- BITwiki: <https://bitwiki.org/>
+
+BIThub is presented as the place to discuss the protocol, ask questions, share templates, propose improvements, and report implementation experiences.
+
+## Deployment
+
+GitHub Pages remains the public interface. The existing deploy workflow builds the Vite site and uploads the `dist` artifact to Pages.
+
+## Non-Goals
+
+- No new framework.
+- No backend service.
+- No database.
+- No account system.
+- No hosted execution runtime.
+- No universal production server checklist in the root protocol.
+- No universal requirement to generate README, PRD, snapshot, context, task, server, or agent files.
+
+## Acceptance Criteria
+
+- Root `init.md` is target-neutral and follows Inspect, Determine, Create, Configure, Validate, Report.
+- Server-specific checks live in the server template.
+- Existing minimal, server, and dry-run template concepts are preserved and corrected.
+- Development-project and agent templates exist.
+- Templates include metadata and optional outputs.
+- The website renders canonical Markdown template files and copies exact source content.
+- GitHub, BIThub, Guides, and BITwiki links are visible.
+- README and PRD describe the corrected model.
+- Production build succeeds without adding a backend or execution runtime.

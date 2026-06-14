@@ -1,0 +1,28 @@
+node_modules/
+
+# Local editor settings
+.vscode/
+.idea/
+
+# Build output and caches
+dist/
+*.tsbuildinfo
+coverage/
+.cache/
+.turbo/
+
+# Environment and local overrides
+.env
+.env.*
+!.env.example
+
+# Package manager state
+.npm/
+.pnpm-store/
+yarn-error.log*
+pnpm-debug.log*
+npm-debug.log*
+
+# Logs and OS files
+*.log
+.DS_Store

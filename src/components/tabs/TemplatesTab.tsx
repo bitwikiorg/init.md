@@ -29,14 +29,55 @@ function MetadataList({ title, items }: { title: string; items: string[] }) {
 }
 
 export function TemplatesTab() {
-  const [activeTemplate, setActiveTemplate] = useState(0)
+  const [activeTargetId, setActiveTargetId] = useState("development-project")
   const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({})
 
-  const template = templates[activeTemplate]
   const copiedRootContent = rootProtocolContent.trim()
-  const renderedRootProtocol = useMemo(() => marked.parse(copiedRootContent, { async: false }) as string, [copiedRootContent])
-  const copiedTemplateContent = useMemo(() => stripFrontmatter(template.content).trim(), [template.content])
-  const renderedTemplate = useMemo(() => marked.parse(copiedTemplateContent, { async: false }) as string, [copiedTemplateContent])
+  const copyTargets = useMemo(
+    () => [
+      {
+        id: "root-protocol",
+        title: "init.md",
+        heading: "init.md",
+        eyebrow: "Root",
+        summary: "General initialization method.",
+        description:
+          "Copy the complete root procedure when no specific template is the better fit. It covers inspect, determine, create, configure, validate, and report.",
+        content: copiedRootContent,
+        icon: FileText,
+        badges: ["Root"],
+        copyLabel: "init.md",
+        copyButtonLabel: "Copy init.md",
+        template: null,
+      },
+      ...templates.map((item) => ({
+        id: item.id,
+        title: item.title,
+        heading: item.metadata.name,
+        eyebrow: item.category,
+        summary: item.summary,
+        description: `${item.description} Copying gives the complete usable template body without page label data.`,
+        content: stripFrontmatter(item.content).trim(),
+        icon: item.icon,
+        badges: [item.category, ...item.metadata.mode],
+        copyLabel: item.metadata.name,
+        copyButtonLabel: "Copy complete template",
+        template: item,
+      })),
+    ],
+    [copiedRootContent],
+  )
+
+  const activeTargetIndex = Math.max(
+    copyTargets.findIndex((target) => target.id === activeTargetId),
+    0,
+  )
+  const activeTarget = copyTargets[activeTargetIndex]
+  const activeTemplate = activeTarget.template
+  const renderedActiveContent = useMemo(
+    () => marked.parse(activeTarget.content, { async: false }) as string,
+    [activeTarget.content],
+  )
 
   const copyToClipboard = useCallback(async (content: string, id: string, label: string) => {
     try {
@@ -51,100 +92,79 @@ export function TemplatesTab() {
     }
   }, [])
 
-  const nextTemplate = () => {
-    setActiveTemplate((prev) => (prev + 1) % templates.length)
+  const nextTarget = () => {
+    setActiveTargetId(copyTargets[(activeTargetIndex + 1) % copyTargets.length].id)
   }
 
-  const prevTemplate = () => {
-    setActiveTemplate((prev) => (prev - 1 + templates.length) % templates.length)
+  const prevTarget = () => {
+    setActiveTargetId(copyTargets[(activeTargetIndex - 1 + copyTargets.length) % copyTargets.length].id)
   }
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h3 className="text-2xl font-bold">Copy complete init instructions</h3>
+          <h3 className="text-2xl font-bold">Choose what to copy</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-            The buttons copy complete Markdown instructions. Template copy leaves out the label data used by this page.
+            Pick the root procedure or a complete target-specific template. The detail pane shows exactly what the copy
+            button will place on the clipboard.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={prevTemplate} disabled={templates.length <= 1} aria-label="Previous template">
+          <Button variant="outline" size="icon" onClick={prevTarget} disabled={copyTargets.length <= 1} aria-label="Previous copy target">
             <CaretLeft size={16} />
           </Button>
           <span className="min-w-[4.5rem] text-center text-sm text-muted-foreground">
-            {activeTemplate + 1} of {templates.length}
+            {activeTargetIndex + 1} of {copyTargets.length}
           </span>
-          <Button variant="outline" size="icon" onClick={nextTemplate} disabled={templates.length <= 1} aria-label="Next template">
+          <Button variant="outline" size="icon" onClick={nextTarget} disabled={copyTargets.length <= 1} aria-label="Next copy target">
             <CaretRight size={16} />
           </Button>
         </div>
       </div>
 
-      <Card className="rounded-md border-2 shadow-none">
-        <CardHeader>
-          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start">
-            <div className="flex items-start gap-3">
-              <FileText size={28} className="mt-1 shrink-0 text-primary" />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {copyTargets.map((target) => (
+          <button
+            key={target.id}
+            type="button"
+            className={`rounded-md border bg-card p-4 text-left transition hover:border-foreground ${target.id === activeTarget.id ? "border-foreground shadow-[4px_4px_0_var(--foreground)]" : ""}`}
+            onClick={() => setActiveTargetId(target.id)}
+          >
+            <div className="mb-3 flex items-center gap-2">
+              {createElement(target.icon, { size: 18, className: "shrink-0 text-primary" })}
               <div>
-                <Badge variant="secondary" className="mb-2 rounded-sm">
-                  Root
-                </Badge>
-                <CardTitle className="text-2xl">init.md</CardTitle>
-                <CardDescription className="mt-3 max-w-3xl text-sm leading-6 sm:text-base">
-                  Copies the complete root procedure from init.md: inspect, determine, create, configure, validate, and
-                  report. Use it when no specific template is the better fit.
-                </CardDescription>
+                <p className="truncate text-sm font-semibold">{target.title}</p>
+                <p className="text-xs text-muted-foreground">{target.eyebrow}</p>
               </div>
             </div>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => copyToClipboard(copiedRootContent, "root-protocol", "init.md")}
-              className="shrink-0 lg:justify-self-end"
-            >
-              {copiedStates["root-protocol"] ? <CheckCircle size={16} /> : <Copy size={16} />}
-              Copy init.md
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border bg-card p-4">
-            <h4 className="mb-2 text-lg font-semibold">Copied content preview</h4>
-            <p className="mb-4 text-sm leading-6 text-muted-foreground">
-              This is the complete init.md procedure copied by the button above.
-            </p>
-            <div className="max-h-[32rem] overflow-auto pr-2">
-              <div className="markdown-surface" dangerouslySetInnerHTML={{ __html: renderedRootProtocol }} />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            <p className="line-clamp-2 text-sm leading-5 text-muted-foreground">{target.summary}</p>
+          </button>
+        ))}
+      </div>
 
       <Card className="overflow-hidden rounded-md border-2 shadow-none">
         <CardHeader>
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start">
             <div className="flex items-start gap-3">
-              {createElement(template.icon, {
+              {createElement(activeTarget.icon, {
                 size: 28,
                 className: "mt-1 shrink-0 text-primary",
               })}
               <div>
                 <div className="mb-2 flex flex-wrap items-center gap-2">
-                  <Badge variant="secondary" className="rounded-sm">
-                    {template.category}
-                  </Badge>
-                  {template.metadata.mode.map((mode) => (
-                    <Badge key={mode} variant="outline" className="rounded-sm">
-                      {mode}
+                  {activeTarget.badges.map((badge, index) => (
+                    <Badge key={`${activeTarget.id}-${badge}`} variant={index === 0 ? "secondary" : "outline"} className="rounded-sm">
+                      {badge}
                     </Badge>
                   ))}
                 </div>
-                <CardTitle className="text-2xl">{template.metadata.name}</CardTitle>
-                <p className="mt-2 text-sm font-medium text-foreground">Target: {template.metadata.target}</p>
+                <CardTitle className="text-2xl">{activeTarget.heading}</CardTitle>
+                {activeTemplate ? (
+                  <p className="mt-2 text-sm font-medium text-foreground">Target: {activeTemplate.metadata.target}</p>
+                ) : null}
                 <CardDescription className="mt-3 max-w-3xl text-sm leading-6 sm:text-base">
-                  {template.description} The copy button gives the complete usable template body, without page label
-                  data.
+                  {activeTarget.description}
                 </CardDescription>
               </div>
             </div>
@@ -152,71 +172,73 @@ export function TemplatesTab() {
               <Button
                 variant="default"
                 size="sm"
-                onClick={() => copyToClipboard(copiedTemplateContent, template.id, template.metadata.name)}
+                onClick={() => copyToClipboard(activeTarget.content, activeTarget.id, activeTarget.copyLabel)}
                 className="shrink-0"
               >
-                {copiedStates[template.id] ? <CheckCircle size={16} /> : <Copy size={16} />}
-                Copy complete template
+                {copiedStates[activeTarget.id] ? <CheckCircle size={16} /> : <Copy size={16} />}
+                {activeTarget.copyButtonLabel}
               </Button>
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {template.features.map((feature) => (
-              <Badge key={feature} variant="outline" className="rounded-sm text-sm">
-                {feature}
-              </Badge>
-            ))}
-          </div>
+          {activeTemplate ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {activeTemplate.features.map((feature) => (
+                <Badge key={feature} variant="outline" className="rounded-sm text-sm">
+                  {feature}
+                </Badge>
+              ))}
+            </div>
+          ) : null}
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="grid gap-4 lg:grid-cols-3">
-            <MetadataList title="Creates" items={template.metadata.creates} />
-            <MetadataList title="Configures" items={template.metadata.configures} />
-            <MetadataList title="Validates" items={template.metadata.validates} />
-          </div>
+          {activeTemplate ? (
+            <>
+              <div className="grid gap-4 lg:grid-cols-3">
+                <MetadataList title="Creates" items={activeTemplate.metadata.creates} />
+                <MetadataList title="Configures" items={activeTemplate.metadata.configures} />
+                <MetadataList title="Validates" items={activeTemplate.metadata.validates} />
+              </div>
 
-          <div className="rounded-md border bg-background p-4">
-            <h5 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Optional outputs
-            </h5>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {template.metadata.optional_outputs.map((output) => (
-                <div key={output} className="rounded-sm bg-muted px-3 py-2 text-sm leading-5 break-words">
-                  {output}
+              <div className="rounded-md border bg-background p-4">
+                <h5 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  Optional outputs
+                </h5>
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {activeTemplate.metadata.optional_outputs.map((output) => (
+                    <div key={output} className="rounded-sm bg-muted px-3 py-2 text-sm leading-5 break-words">
+                      {output}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : null}
+
+          {!activeTemplate ? (
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                "Use when the target needs the general init method.",
+                "Switch to a template when the target clearly matches one.",
+              ].map((item) => (
+                <div key={item} className="rounded-md border bg-background p-4 text-sm leading-6 text-muted-foreground sm:text-base">
+                  {item}
                 </div>
               ))}
             </div>
-          </div>
+          ) : null}
 
           <div className="rounded-md border bg-card p-4">
             <h4 className="mb-2 text-lg font-semibold">Copied content preview</h4>
             <p className="mb-4 text-sm leading-6 text-muted-foreground">
-              This is the complete Markdown body copied by the button above. Page label data is not copied.
+              This is the complete Markdown copied by the button above.
             </p>
             <div className="max-h-[32rem] overflow-auto pr-2">
-              <div className="markdown-surface" dangerouslySetInnerHTML={{ __html: renderedTemplate }} />
+              <div className="markdown-surface" dangerouslySetInnerHTML={{ __html: renderedActiveContent }} />
             </div>
           </div>
         </CardContent>
       </Card>
-
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {templates.map((item, index) => (
-          <button
-            key={item.id}
-            type="button"
-            className={`rounded-md border bg-card p-4 text-left transition hover:border-foreground ${index === activeTemplate ? "border-foreground shadow-[4px_4px_0_var(--foreground)]" : ""}`}
-            onClick={() => setActiveTemplate(index)}
-          >
-            <div className="mb-3 flex items-center gap-2">
-              {createElement(item.icon, { size: 18, className: "shrink-0 text-primary" })}
-              <h4 className="truncate text-sm font-semibold">{item.title}</h4>
-            </div>
-            <p className="line-clamp-2 text-sm leading-5 text-muted-foreground">{item.summary}</p>
-          </button>
-        ))}
-      </div>
     </div>
   )
 }

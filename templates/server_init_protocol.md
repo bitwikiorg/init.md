@@ -1,168 +1,109 @@
-# Server Init Protocol (Template)
+---
+name: Server Init Protocol
+target: Server, service host, production infrastructure, or deployment environment
+purpose: Inspect server-specific operational requirements, configure what applies, validate readiness, and report deployment state.
+mode:
+  - active
+  - dry run
+  - repair
+  - reinitialize
+creates:
+  - Server report when host state must be recorded
+  - Service definitions or startup scripts when required
+  - Environment examples when configuration must be documented without secrets
+  - Runbook or validation report when operations need handoff material
+configures:
+  - Operating system prerequisites
+  - Runtime settings
+  - Services
+  - Networking and firewall policy
+  - Secret references
+  - Logging, backups, and deployment checks
+validates:
+  - Required services start or are already running
+  - Dependencies and ports are available
+  - Configuration parses
+  - Resource, storage, time, and security checks pass or produce warnings
+optional_outputs:
+  - SERVER.md
+  - RUNBOOK.md
+  - SNAPSHOT.md
+  - INIT_CONTEXT_SNAPSHOT.md
+  - .env.example
+  - health check or readiness report
+---
 
-**Intent**
-- Production-oriented initialization with clear, safe probes.
-- Emphasizes precise execution rules, architectural context, and tool policies.
+# Server Init Protocol
 
-## INIT_SEQUENCE
+Use this template for servers, service hosts, production infrastructure, or deployment environments. Server-specific checks belong here, not in the general root protocol.
 
-### HOST_PREFLIGHT
-Verify OS/kernel compatibility and time alignment (read-only by default).
+## Target Fit
 
-**Steps:**
-- **Description**: Note OS family and kernel.
-  - **Action**: Use safe reads; prefer APIs to shell.
-  - **Source**: OS_INFO
+Use this template when the target's operation depends on host state, services, network posture, secrets, storage, startup behavior, or deployment readiness.
 
-- **Description**: Verify NTP/time coherence.
-  - **Action**: Read time settings; report drift; no mutation.
-  - **Source**: SYSTEM_TIME_INFO
+Do not use this template for a non-server target unless server infrastructure is actually part of its operation.
 
-### RESOURCE_BASELINE
-Capture compute/storage baseline to size workloads.
+## Procedure
 
-**Steps:**
-- **Description**: CPU, RAM, GPU presence (if applicable), disk free.
-  - **Action**: Prefer safe APIs and cached metrics.
-  - **Source**: SYSTEM_HARDWARE_METRICS
+### `INSPECT`
 
-- **Description**: Load average and thresholds.
-  - **Action**: Read load metrics; set warning thresholds.
-  - **Source**: SYSTEM_PERFORMANCE_METRICS
+- `description`: Build a relevant picture of the host and service environment.
+- `inspect`: Operating system, kernel, clock and time source, CPU, RAM, storage, load, users or service accounts, runtime versions, service manager, container or orchestrator state, network interfaces, listening ports, firewall policy, secret locations by reference, logging destinations, backup expectations, and existing runbooks.
+- `condition`: Use read-only inspection first. Avoid privileged or destructive actions unless the operator explicitly authorizes them.
+- `source`: Host files, service definitions, package manifests, deployment docs, cloud or container metadata, monitoring notes, and operator constraints.
 
-### ARCHITECTURE_AND_TOOLS
-Ground execution rules in actual system design.
+### `DETERMINE`
 
-**Steps:**
-- **Description**: Document services, runtimes, and schedulers in use.
-  - **Action**: Summarize architecture: containers, queues, cron, orchestrators.
-  - **Source**: SYSTEM_ARCHITECTURE_DOCS
+- `description`: Decide what the server needs to become operational.
+- `action`: Identify required packages, services, ports, environment variables, secret references, storage paths, permissions, startup order, deployment commands, monitoring hooks, backup strategy, and rollback expectations.
+- `condition`: Treat every output as conditional. A snapshot, server report, or runbook is useful only when it helps operation, handoff, audit, or recovery.
+- `output`: A server-specific initialization plan.
 
-- **Description**: Declare toolchain versions and paths.
-  - **Action**: Pin required CLIs and SDKs; define PATH expectations.
-  - **Source**: TOOLCHAIN_POLICY
+### `CREATE`
 
-### TOOL_DISCOVERY_AND_API_POLICY
-Define exact routing for external services.
+Create only artifacts required by the server target. Possible outputs include:
 
-**Steps:**
-- **Description**: Load capability matrix (if present).
-  - **Action**: Parse and validate schemas.
-  - **Source**: TOOL_SCHEMA
+- service definitions;
+- startup scripts;
+- `.env.example` without secrets;
+- `SERVER.md`;
+- `RUNBOOK.md`;
+- `SNAPSHOT.md` or `INIT_CONTEXT_SNAPSHOT.md` when a point-in-time record is useful;
+- readiness or health-check scripts;
+- deployment notes;
+- backup or restore instructions.
 
-- **Description**: Enforce API routing rules.
-  - **Policy**:
-    - Use approved HTTP clients/infrastructure modules.
-    - Do not proxy REST via generic fetchers.
-    - File access via dedicated file tools; stream large files.
-  - **Source**: API_ROUTING_POLICY
+Do not write raw secrets to disk. Do not create unrelated project files because this is a server template.
 
-### SECRET_MANAGEMENT
-Strict credential handling and permissions.
+### `CONFIGURE`
 
-**Steps:**
-- **Description**: Pull secrets from vault into memory only.
-  - **Action**: No disk writes; short-lived tokens preferred.
-  - **Source**: SECURE_VAULT
+- `description`: Configure the server elements required for operation.
+- `action`: Set or document runtime paths, service units, container settings, scheduler entries, firewall rules, reverse proxy routes, TLS expectations, secret references, permissions, log locations, backup targets, and deployment commands.
+- `condition`: Make active changes only in active or repair mode and only with appropriate access.
 
-- **Description**: Validate permissions on secret dirs/keys.
-  - **Action**: Confirm intended permission posture.
-  - **Source**: SECRET_STORAGE_PERMISSIONS
+### `VALIDATE`
 
-### NETWORK_SECURITY
-Confirm firewall posture and scanning plan.
+- `description`: Confirm the server can perform its intended role.
+- `validation`: Use relevant checks such as configuration parsing, service status, startup commands, port availability, dependency resolution, disk headroom, clock coherence, firewall review, secret reference availability, log writeability, backup path accessibility, and health endpoint response.
+- `status`: Use `OPERATIONAL`, `OPERATIONAL_WITH_WARNINGS`, `BLOCKED`, or `DRY_RUN_COMPLETE`.
 
-**Steps:**
-- **Description**: Authorized ports/services only.
-  - **Action**: Document intended ufw/security-group state.
-  - **Source**: FIREWALL_POLICY
+Do not declare a server operational if required services cannot start, required configuration cannot parse, or required secrets are unavailable.
 
-- **Description**: Scanning cadence (SAST/DAST/deps).
-  - **Action**: Define cadence, owners, and thresholds.
-  - **Source**: SECURITY_SCANNER_PLAN
+### `REPORT`
 
-### CONTEXT_LOADING
-Load environment, docs, and schedules.
+Report:
 
-**Steps:**
-- **Description**: Index configs and docs.
-  - **Action**: Build in-memory map of paths and purposes.
-  - **Source**: FILE_SYSTEM_SCAN
+- target host or environment;
+- inspected host, service, network, secret, logging, and backup areas;
+- created or updated artifacts;
+- configured services or settings;
+- validation checks and outcomes;
+- warnings, missing access, or blockers;
+- final operational state.
 
-- **Description**: Inventory cron manifests.
-  - **Action**: List active schedules and owners.
-  - **Source**: PROJECT_CRON_MANIFESTS
+## Server-Specific Notes
 
-- **Description**: Persist sanitized context snapshot.
-  - **Action**: Serialize a summary (no raw content) to disk.
-  - **Output Path**: ./cache/context.snapshot.json
-  - **Source**: SERIALIZED_CONTEXT_MAP
-
-### CODE_GOVERNANCE_AND_STATE
-Auditability, backups, caches, telemetry.
-
-**Steps:**
-- **Description**: Semantic diffs for changes.
-  - **Policy**: Append to ./logs/code_history/<timestamp>.patch
-  - **Source**: VERSION_CONTROL_POLICY
-
-- **Description**: Backup strategy (data dirs).
-  - **Action**: Define rsync/remote storage targets; defer execution.
-  - **Source**: BACKUP_STRATEGY
-
-- **Description**: Cache hygiene.
-  - **Action**: Expire >7d files when enabled; configurable.
-  - **Source**: CACHE_POLICY
-
-- **Description**: Logging fan-out.
-  - **Action**: Plan forwarding to centralized sinks.
-  - **Source**: CENTRALIZED_LOGGING_PLAN
-
-### STARTUP_VALIDATION_AND_ROLLBACK
-Diagnostics, readiness, and rollback.
-
-**Steps:**
-- **Description**: Lint/tests/static analysis.
-  - **Action**: List commands and pass criteria.
-  - **Source**: DIAGNOSTIC_CHECKLIST
-
-- **Description**: READY signal and rollback triggers.
-  - **Action**: Define log format and state change; specify when to roll back.
-  - **Source**: SYSTEM_READINESS_SIGNAL
-
-### SELF_PRIMING_AND_CONTEXTUALIZATION
-Load directives/prompts and recent context.
-
-**Steps:**
-- **Description**: Core directives and system prompts.
-  - **Action**: Load into working memory.
-  - **Source**: CORE_AND_PROMPTS
-
-- **Description**: Memory recall of salient events.
-  - **Action**: Query memory adapters; assemble situational vector.
-  - **Source**: INTERNAL_MEMORY_RETRIEVAL
-
-- **Description**: Enter ACCEPTING state.
-  - **Action**: Log completion and await commands.
-  - **Source**: SELF_PRIMING_STATUS
-
-## MINIMUM_RUNTIME_CONTEXT_LOAD
-
-Essential elements:
-- Host metadata (from cached metrics)
-- Tool capability matrix (if present)
-- Core directives/prompts
-- Cron manifests and script inventory
-- Recent logs (sanitized) and version patches
-- Context snapshot (sanitized summary)
-
-## EXECUTION_START
-
-**Steps:**
-- **Description**: Generate INIT_CONTEXT_SNAPSHOT.md (summaries only).
-  - **Action**: Create directory tree (depth 3), metrics table, key locations.
-  - **Output File**: ./INIT_CONTEXT_SNAPSHOT.md
-
-- **Description**: Print READY + snapshot path.
-  - **Action**: Log concise summary; await instructions.
-  - **Await Instructions**: true
+- Host operating-system checks are server concerns.
+- Clock, NTP, CPU, RAM, storage, and load metrics are server concerns.
+- Firewall, secret handling, security scanners, backups, cache expiration, centralized logging, and generated environment snapshots are server concerns when they apply.
+- These concerns must not be imposed on unrelated targets by the root protocol.

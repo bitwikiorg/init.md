@@ -1,107 +1,91 @@
-# Dry-Run Init Protocol (Template)
+---
+name: Dry-Run Init Protocol
+target: Any target that needs proposed initialization work without mutation
+purpose: Inspect the target, determine requirements, produce an initialization plan, and report what would become operational without changing files, services, or state.
+mode:
+  - dry run
+creates:
+  - No target artifacts
+configures:
+  - No target settings
+validates:
+  - Proposed checks are identified and checked for feasibility where possible without mutation
+optional_outputs:
+  - Dry-run report outside the target when the operator requests one
+  - Proposed PLAN.md content when actionable work remains
+  - Proposed validation checklist
+---
 
-**Intent**
-- Rehearsal-only initialization: no mutation, no enforcement.
-- Ideal for pre-production mental models and command playbooks.
+# Dry-Run Init Protocol
 
-## INIT_SEQUENCE
+Use this template to rehearse initialization without changing the target. The dry run may inspect and reason about requirements, but it must not create, configure, delete, install, migrate, start, stop, or overwrite anything in the target.
 
-### HOST_PREFLIGHT
-Mentally confirm OS/time alignment without probing.
+## Target Fit
 
-**Steps:**
-- **Description**: OS family and kernel fit expectations.
-  - **Action**: Reference prior inventories; note discrepancies.
-  - **Source**: OS_INFO
+Use this template when:
 
-- **Description**: Clock alignment acknowledged.
-  - **Action**: Note any drift assumptions for later remediation.
-  - **Source**: SYSTEM_TIME_INFO
+- the operator wants to understand impact before active initialization;
+- the target is sensitive, remote, production-like, or shared;
+- access is read-only;
+- the correct template is unknown;
+- proposed outputs need review before creation.
 
-### RESOURCE_BASELINE
-Notional compute/storage profile.
+This template works for any target type. Server checks appear only when the target is actually a server or infrastructure environment.
 
-**Steps:**
-- **Description**: CPU/memory/storage expectations.
-  - **Action**: Use container defaults or prior notes; set soft limits.
-  - **Source**: SYSTEM_HARDWARE_METRICS
+## Procedure
 
-- **Description**: Hypothetical bottlenecks.
-  - **Action**: Define alert thresholds for future activation.
-  - **Source**: SYSTEM_PERFORMANCE_METRICS
+### `INSPECT`
 
-### TOOL_DISCOVERY_AND_API_POLICY
-Reiterate approved routes and adapters.
+- `description`: Inspect enough to understand the target and its likely operational requirements.
+- `inspect`: Existing files, configuration, docs, service descriptions, tool definitions, manifests, environment notes, or user-provided constraints that are relevant to the target.
+- `condition`: Do not mutate. Do not broaden inspection beyond the target without reason.
+- `source`: Read-only evidence.
 
-**Steps:**
-- **Description**: Command registry and features.
-  - **Action**: Summarize available entry points and controllers.
-  - **Source**: COMMAND_AND_FEATURE_INDEX
+### `DETERMINE`
 
-- **Description**: Routing rules.
-  - **Policy**:
-    - Use designated search adapter in role-play.
-    - Use approved HTTP clients; no ad hoc fetch.
-    - Prefer file utilities for content inspection.
-  - **Source**: API_ROUTING_POLICY
+- `description`: Select the closest initialization pattern or combine compatible pattern sections.
+- `action`: Identify what would need to be created, configured, preserved, updated, or validated in an active run.
+- `output`: A proposed initialization plan with conditions.
 
-### SECRET_MANAGEMENT
-Validate credential flow assumptions.
+The plan should distinguish:
 
-**Steps:**
-- **Description**: Bootstrap with test doubles or in-memory mocks.
-  - **Action**: Exercise encryption/decryption pathways conceptually.
-  - **Source**: VAULT_FLOW_NOTES
+- required work;
+- optional work;
+- artifacts that should not be changed;
+- questions or permissions needed before active mode;
+- validation steps that would prove operation.
 
-- **Description**: Target permission posture for storage.
-  - **Action**: Record intended fs permissions; defer checks.
-  - **Source**: STORAGE_PERMISSIONS_PLAN
+### `CREATE`
 
-### CONTEXT_LOADING
-Curate rehearsal knowledge.
+- `description`: Do not create target artifacts.
+- `action`: If a report is requested, place it only where the operator explicitly permits. Otherwise keep the dry-run report in the response or calling system.
+- `output`: Proposed content or artifact names, not actual target files.
 
-**Steps:**
-- **Description**: Catalog guides/prompts/configs by listing only.
-  - **Action**: Assemble notes linking assets to roles.
-  - **Source**: FILE_SYSTEM_SCAN
+### `CONFIGURE`
 
-- **Description**: Sketch context snapshot shape.
-  - **Action**: Define future ./cache/context.snapshot.json fields (no writes).
-  - **Source**: SERIALIZED_CONTEXT_MAP
+- `description`: Do not configure the target.
+- `action`: Describe configuration that would be required in active mode, including paths, dependencies, services, tools, environment variables, agent instructions, or integrations.
 
-### CODE_GOVERNANCE_AND_STATE
-Plan governance; avoid state writes.
+### `VALIDATE`
 
-**Steps:**
-- **Description**: Diffs on mutation.
-  - **Policy**: Append to ./logs/code_history/<timestamp>.patch in active mode.
-  - **Source**: VERSION_CONTROL_POLICY
+- `description`: Validate the plan, not the initialized result.
+- `validation`: Confirm the proposed work is internally consistent, target-relevant, and has a plausible validation method. Where read-only checks are available, use them to reduce uncertainty.
+- `status`: Use `DRY_RUN_COMPLETE` when the plan is complete, or `BLOCKED` when the plan cannot be formed from available evidence.
 
-- **Description**: Backup and cache routines, later.
-  - **Action**: Document sync and purge cadence for go-live.
-  - **Source**: BACKUP_AND_CACHE_PLANS
+### `REPORT`
 
-### STARTUP_VALIDATION_AND_ROLLBACK
-Define checks and signals for future runs.
+Report:
 
-**Steps:**
-- **Description**: Lint/tests/static analysis plan.
-  - **Action**: List commands and pass criteria.
-  - **Source**: DIAGNOSTIC_CHECKLIST
+- target identified;
+- evidence inspected;
+- selected template or pattern;
+- work that would be created;
+- work that would be configured;
+- validation that would be run;
+- artifacts that would remain untouched;
+- warnings, unknowns, permissions, or blockers;
+- whether the target would likely become operational after active initialization.
 
-- **Description**: READY announcement format.
-  - **Action**: Define summary message structure (metrics + snapshot path).
-  - **Source**: SYSTEM_READINESS_SIGNAL
+## Non-Mutation Rule
 
-## EXECUTION_START
-
-Conclude rehearsal with a blueprint.
-
-**Steps:**
-- **Description**: Draft the intended INIT_CONTEXT_SNAPSHOT.md (on paper/notes).
-  - **Action**: Define directory tree, metrics headings, and context catalog for future real runs.
-  - **Output File**: ./INIT_CONTEXT_SNAPSHOT.md
-
-- **Description**: Define short READY summary format for future active runs.
-  - **Action**: Record message template and fields.
-  - **Await Instructions**: true
+A dry run makes no target changes. Proposed files such as `README.md`, `AGENTS.md`, `SNAPSHOT.md`, server reports, task files, or configuration examples are only proposed unless the operator switches to active mode.

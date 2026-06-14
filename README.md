@@ -1,48 +1,106 @@
-# init.md — Agent initialization blueprints
+# init.md
 
-This repository provides minimal, production-friendly initialization protocols for AI agents. It serves both humans (via GitHub Pages) and agents (via machine-readable protocol files).
+`init.md` is a human- and machine-readable procedure for inspecting a target, determining what it requires, applying the appropriate initialization pattern, validating the result, and reporting its operational state.
 
-## Structure
+It is not one fixed scaffold. The canonical file defines the general initialization procedure. Templates specialize that procedure for specific targets.
 
-- **`init.md`** — The canonical, minimal initialization protocol
-- **`templates/`** — Ready-to-copy template variants for different contexts
-- **GitHub Pages Site** — Human-readable documentation and template browser
+## 1. Definition
 
-## Templates
+Use `init.md` when a target needs to become operational. A target may be a software project, repository, AI agent, server, service, workspace, research environment, data pipeline, application, tool, local directory, remote environment, or existing system requiring restoration or reconfiguration.
 
-- **`minimal_init_protocol.md`** — Smallest possible initialization
-- **`server_init_protocol.md`** — Production server initialization  
-- **`dry_run_init_protocol.md`** — Safe rehearsal mode
+## 2. How It Works
 
-## Usage
+The root protocol stays general. It identifies the target, chooses or adapts an initialization pattern, creates and configures only what applies, validates the intended result, and reports the operational state.
 
-1. **For Agents**: Read and parse `init.md` or template files directly
-2. **For Humans**: Visit the GitHub Pages site for documentation and template browser
-3. **For Developers**: Copy templates and customize for your specific system architecture
+Templates provide concrete patterns for common target categories. They describe likely behavior, not mandatory output bundles.
 
-## GitHub Pages Setup
+## 3. Six-Stage Initialization Process
 
-1. Fork this repository
-2. Go to Settings → Pages → Source: Deploy from branch
-3. Select `main` branch and `/ (root)` folder
-4. Your documentation site will be available at `https://yourusername.github.io/init-md/`
+1. Inspect what exists.
+2. Determine what is needed.
+3. Create what applies.
+4. Configure what is required.
+5. Validate the result.
+6. Report what became operational.
 
-## Principles
+## 4. General Protocol Versus Templates
 
-- **Lean footprint**: Vite + React build that deploys cleanly to GitHub Pages
-- **Structured**: Machine-readable protocols that agents can parse systematically  
-- **Practical**: Templates are ready to copy into production workflows without extra scaffolding
+- `init.md` defines the target-neutral procedure.
+- `templates/` contains target-specific initialization patterns.
+- Generated outputs are conditional.
+- Validation is derived from the target.
+- Existing work should be adapted before creating replacements.
 
-## Core dependencies
+No output file is universally required except where the selected template or target requires it.
 
-- React 19 and Vite 6 for the static site build
-- Tailwind CSS 4 with Radix UI for styling primitives
-- `@phosphor-icons/react` and shared UI components for consistent visuals
+## 5. Available Templates
 
-## License
+- `templates/minimal_init_protocol.md` — smallest reasonable initialization pattern for narrow gaps.
+- `templates/dry_run_init_protocol.md` — no-change inspection and proposed initialization plan.
+- `templates/development_project_init_protocol.md` — software projects, repositories, apps, packages, CLIs, websites, and monorepos.
+- `templates/agent_init_protocol.md` — agent instructions, tools, prompts, state, and startup validation.
+- `templates/server_init_protocol.md` — server, service host, infrastructure, and deployment readiness.
 
-MIT License. Adapt freely to your environment and policies.
+Each template includes metadata for likely targets, modes, created artifacts, configured elements, validation checks, and optional outputs.
 
-## Credits
+## 6. Usage For Agents
 
-Inspired by [openai/agents.md](https://github.com/openai/agents.md), adapted for lightweight GitHub Pages deployment focused on initialization protocols.
+Agents can read the root protocol or a selected template directly. During inspection, determine whether agent instructions are applicable. Create `AGENTS.md` only when agent operation applies and valid target-specific instructions do not already exist.
+
+Different projects should have different `AGENTS.md` files. Different targets should have different `init.md` implementations.
+
+## 7. Usage For Humans
+
+1. Identify the target and intended operational result.
+2. Choose the closest template.
+3. Copy or adapt the template.
+4. Run the procedure in active, dry-run, repair, or reinitialize mode.
+5. Review the validation result.
+6. Keep the resulting target-specific `init.md` with the target.
+
+Example instructions:
+
+```text
+Initialize this repository using the development-project template.
+Inspect this server using the server template in dry-run mode.
+Determine what this agent workspace needs to become operational.
+Create an AGENTS.md file only if this project would benefit from one.
+```
+
+## 8. Usage For Developers
+
+This repository preserves a static Vite and React website for browsing templates and copying canonical Markdown content.
+
+Common commands:
+
+```bash
+npm install
+npm run dev
+npm run build
+```
+
+The build runs `scripts/check-templates.mjs` before compiling the site. That check verifies the expected template files exist and contain the required metadata fields.
+
+## 9. Website
+
+The public site is deployed with GitHub Pages from the existing Vite build. It renders the Markdown files under `templates/` as the canonical source and keeps copy-to-clipboard behavior for root `init.md` and complete usable template bodies.
+
+GitHub Pages must use **Build and deployment > Source: GitHub Actions** for this repository. Do not use **Deploy from a branch > root**, because that serves the unbuilt Vite source files and the browser will try to load `/src/main.tsx` directly.
+
+Repository: <https://github.com/bitwikiorg/init.md>
+
+## 10. BIThub Discussion
+
+Use BIThub to discuss the protocol, ask questions, share templates, propose improvements, and report implementation experiences.
+
+- BIThub forum: <https://hub.bitwiki.org/>
+
+## 11. Contributing
+
+Contributions should preserve the distinction between the general protocol and target-specific templates. Avoid adding universal requirements to the root protocol when they belong in a template.
+
+When updating templates, keep the Markdown files canonical and maintain their metadata fields.
+
+## 12. License
+
+MIT License. See `LICENSE`.

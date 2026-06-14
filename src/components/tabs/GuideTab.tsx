@@ -1,214 +1,133 @@
-/**
- * Why: Separate the implementation guide so onboarding flows can embed it without inheriting the full page shell.
- * What: Outlines the step-by-step instructions and selection matrix for protocol adoption.
- * How: Wraps the existing content in a dedicated component for reuse and easier maintenance.
- */
+import { CheckCircle, Copy } from "@phosphor-icons/react"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Desktop, FileText, TestTube } from "@phosphor-icons/react"
+import { toast } from "sonner"
+
+const workflow = [
+  {
+    title: "Identify the target",
+    body: "Name what init.md is being used on, where it lives, and what ready means for that target.",
+  },
+  {
+    title: "Choose init.md or a template",
+    body: "Use init.md for the general method. Use a complete template when the target has a clear type.",
+  },
+  {
+    title: "Copy the usable body",
+    body: "Copy buttons paste the complete Markdown instructions, not the label data used by this page.",
+  },
+  {
+    title: "Run the init procedure",
+    body: "Inspect what exists, decide what is missing, create or configure only what applies, then validate it.",
+  },
+  {
+    title: "Review validation",
+    body: "Use checks that match the target: commands, configuration, service health, or instruction consistency.",
+  },
+  {
+    title: "Keep the init result specific",
+    body: "The final instructions should explain this target, not a generic checklist copied forward forever.",
+  },
+]
+
+const examples = [
+  "Use the complete init.md procedure to inspect this target, initialize what applies, validate it, and report status.",
+  "Use the complete development project init template to initialize this repository and validate the developer workflow.",
+  "Use the complete dry-run init template to inspect this target and report proposed init work without changing files.",
+  "Use the complete agent init template only if this target needs agent instructions, tools, prompts, or state.",
+]
 
 export function GuideTab() {
+  const copyExample = async (example: string) => {
+    try {
+      await navigator.clipboard.writeText(example)
+      toast.success("Example copied")
+    } catch {
+      toast.error("Failed to copy example")
+    }
+  }
+
   return (
     <div className="space-y-8">
-      <Card>
+      <Card className="rounded-md border-2 shadow-none">
         <CardHeader>
-          <CardTitle>Implementation Guide</CardTitle>
-          <CardDescription>How to define your project scope, systems, and execution parameters</CardDescription>
+          <CardTitle className="text-2xl">Use init.md directly</CardTitle>
+          <CardDescription className="text-base leading-7">
+            Start with the target. Copy init.md or a complete template, then run the procedure against that target.
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
-                1
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium mb-2">Define Project Scope</h4>
-                <p className="text-muted-foreground text-sm mb-3">
-                  Identify what your agent needs to know about your project and environment
-                </p>
-                <div className="bg-muted/50 rounded-lg p-3 text-sm sm:text-base">
-                  <p>
-                    <strong>Ask yourself:</strong> What files matter most? What technologies are in use? What documentation
-                    should exist but doesn't?
-                  </p>
+        <CardContent>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {workflow.map((step, index) => (
+              <div key={step.title} className="grid grid-cols-[2.75rem_1fr] gap-4 rounded-md border bg-background p-4">
+                <div className="grid size-10 place-items-center rounded-sm bg-foreground font-mono text-sm font-bold text-background">
+                  {index + 1}
+                </div>
+                <div>
+                  <h4 className="font-semibold">{step.title}</h4>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base">{step.body}</p>
                 </div>
               </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
-                2
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium mb-2">Map Your System Architecture</h4>
-                <p className="text-muted-foreground text-sm mb-3">
-                  Document services, dependencies, and infrastructure components
-                </p>
-                <div className="bg-muted/50 rounded-lg p-3 text-sm sm:text-base">
-                  <p>
-                    <strong>Consider:</strong> Databases, APIs, scheduled jobs, external services, deployment targets, and
-                    monitoring systems.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
-                3
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium mb-2">Customize Template Parameters</h4>
-                <p className="text-muted-foreground text-sm mb-3">
-                  Adapt the protocol to your specific tools, policies, and constraints
-                </p>
-                <div className="bg-muted/50 rounded-lg p-3 text-sm sm:text-base">
-                  <p>
-                    <strong>Modify:</strong> File output locations, probe safety levels, documentation depth, and execution
-                    timeouts.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-accent text-accent-foreground rounded-full flex items-center justify-center text-sm font-semibold">
-                4
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium mb-2">Execute and Validate</h4>
-                <p className="text-muted-foreground text-sm mb-3">
-                  Run the protocol and verify generated documentation accuracy
-                </p>
-                <div className="bg-muted/50 rounded-lg p-3 text-sm sm:text-base">
-                  <p>
-                    <strong>Verify:</strong> File trees are complete, configurations are accurate, and documentation reflects
-                    current system state.
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <Card className="rounded-md shadow-none">
+          <CardHeader>
+            <CardTitle>Template selection</CardTitle>
+            <CardDescription>Choose the init pattern that matches the target.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground sm:text-base">
+            <p>
+              Use minimal for one clear gap, dry run for no-change planning, development project for codebases, agent
+              for agent instructions, and server for host or deployment readiness.
+            </p>
+            <p>
+              If no template fits, copy init.md and write a short target-specific init plan before making changes.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-md shadow-none">
+          <CardHeader>
+            <CardTitle>Example instructions</CardTitle>
+            <CardDescription>Copy one when asking someone or an agent to run init.md.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {examples.map((example) => (
+              <div key={example} className="flex flex-col gap-3 rounded-md border bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
+                <code className="text-sm leading-6 text-foreground">{example}</code>
+                <Button type="button" variant="outline" size="sm" onClick={() => copyExample(example)}>
+                  <Copy size={16} />
+                  Copy
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="rounded-md bg-card shadow-none">
         <CardHeader>
-          <CardTitle>Template Selection Guide</CardTitle>
-          <CardDescription>Choose the right initialization approach for your environment</CardDescription>
+          <CardTitle>Completion review</CardTitle>
+          <CardDescription>Before calling the target operational, check that the report answers these questions.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-6">
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <FileText className="text-primary" size={20} />
-                  <h4 className="font-medium">Minimal</h4>
-                </div>
-                <div className="text-sm space-y-2">
-                  <p className="text-muted-foreground">
-                    <strong>Use when:</strong> Personal projects, prototypes, development environments
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Generates:</strong> Essential README, TODO, and CONTEXT files
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Desktop className="text-primary" size={20} />
-                  <h4 className="font-medium">Server</h4>
-                </div>
-                <div className="text-sm space-y-2">
-                  <p className="text-muted-foreground">
-                    <strong>Use when:</strong> Production systems, team projects, complex infrastructure
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Generates:</strong> Complete operational suite including RUNBOOK and AGENTS
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <TestTube className="text-primary" size={20} />
-                  <h4 className="font-medium">Dry-Run</h4>
-                </div>
-                <div className="text-sm space-y-2">
-                  <p className="text-muted-foreground">
-                    <strong>Use when:</strong> Testing, validation, security-conscious environments
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Generates:</strong> Documentation blueprints without system changes
-                  </p>
-                </div>
-              </div>
+        <CardContent className="grid gap-3 md:grid-cols-2">
+          {[
+            "What target was initialized?",
+            "What was inspected?",
+            "What was created or configured?",
+            "What validation was run?",
+            "What remains incomplete or blocked?",
+            "Where are the important outputs?",
+          ].map((question) => (
+            <div key={question} className="flex gap-3 text-sm leading-6 sm:text-base">
+              <CheckCircle className="mt-0.5 shrink-0 text-primary" size={18} />
+              <span>{question}</span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Common Implementation Patterns</CardTitle>
-          <CardDescription>Proven approaches for different project types and environments</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <h4 className="font-medium text-sm">For Web Applications</h4>
-              <div className="grid sm:grid-cols-2 gap-3 text-sm sm:text-base">
-                <div className="bg-muted/50 rounded p-3">
-                  <p className="font-medium mb-1">Frontend Projects</p>
-                  <p className="text-muted-foreground">
-                    Focus on package.json, build tools, component architecture, and deployment pipelines
-                  </p>
-                </div>
-                <div className="bg-muted/50 rounded p-3">
-                  <p className="font-medium mb-1">Full-Stack Apps</p>
-                  <p className="text-muted-foreground">
-                    Map both client and server, database schemas, API endpoints, and environment configs
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="font-medium text-sm">For Infrastructure Projects</h4>
-              <div className="grid sm:grid-cols-2 gap-3 text-sm sm:text-base">
-                <div className="bg-muted/50 rounded p-3">
-                  <p className="font-medium mb-1">Container Deployments</p>
-                  <p className="text-muted-foreground">
-                    Document Dockerfiles, compose files, orchestration configs, and service dependencies
-                  </p>
-                </div>
-                <div className="bg-muted/50 rounded p-3">
-                  <p className="font-medium mb-1">Cloud Infrastructure</p>
-                  <p className="text-muted-foreground">
-                    Catalog terraform files, cloud resources, networking, and monitoring configurations
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="font-medium text-sm">For Data Projects</h4>
-              <div className="grid sm:grid-cols-2 gap-3 text-sm sm:text-base">
-                <div className="bg-muted/50 rounded p-3">
-                  <p className="font-medium mb-1">Analytics Pipelines</p>
-                  <p className="text-muted-foreground">
-                    Map data sources, transformation scripts, scheduling, and output destinations
-                  </p>
-                </div>
-                <div className="bg-muted/50 rounded p-3">
-                  <p className="font-medium mb-1">ML/AI Systems</p>
-                  <p className="text-muted-foreground">
-                    Document models, training data, inference endpoints, and monitoring systems
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </CardContent>
       </Card>
     </div>

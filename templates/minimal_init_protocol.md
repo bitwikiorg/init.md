@@ -1,83 +1,90 @@
-# Minimal Init Protocol (Template)
+---
+name: Minimal Init Protocol
+target: Any small target with a narrow operational gap
+purpose: Identify the least work required for the target to become operational, apply only that work, validate it, and report the result.
+mode:
+  - active
+  - repair
+  - reinitialize
+creates:
+  - The smallest missing artifact or structure that the target actually needs
+configures:
+  - Only relationships, settings, or instructions required by that artifact
+validates:
+  - The minimum relevant check proving the target can operate as intended
+optional_outputs:
+  - README.md when human-facing documentation is missing or inadequate
+  - AGENTS.md when agent operation applies and no valid instruction file exists
+  - INIT.md or init.md when the target needs a local initialization procedure
+  - PLAN.md when unresolved work remains
+---
 
-**Intent**
-- A smallest-possible initialization blueprint for agents.
-- Safe-by-default: conceptual steps, strictly limited probes, zero secret exposure.
+# Minimal Init Protocol
 
-## INIT_SEQUENCE
+Use this template when a target needs the smallest reasonable initialization pass. The goal is not to create a standard project layout. The goal is to discover the minimum missing requirement, apply it when appropriate, validate it, and report the state.
 
-### HOST_PREFLIGHT
-Lightweight awareness of OS and time coherence.
+## Target Fit
 
-**Steps:**
-- **Description**: Capture OS family and version via safe reads.
-  - **Action**: Read /etc/os-release if present; avoid privileged actions.
-  - **Source**: OS_INFO
+Use this template when:
 
-- **Description**: Note current timezone and time source.
-  - **Action**: Use safe APIs; do not adjust system time.
-  - **Source**: SYSTEM_TIME_INFO
+- the target is small, local, or clearly scoped;
+- the operator wants a low-change initialization;
+- one missing artifact, setting, or instruction may be enough;
+- broad infrastructure, product, or agent setup would be excessive.
 
-### RESOURCE_BASELINE
-Conservative resource awareness for planning.
+Do not assume server access, production infrastructure, package manifests, snapshots, PRDs, or agent instructions.
 
-**Steps:**
-- **Description**: Record CPU cores and memory estimate.
-  - **Action**: Use safe system APIs or cached metrics.
-  - **Source**: SYSTEM_HARDWARE_METRICS
+## Procedure
 
-### TOOL_DISCOVERY_AND_API_POLICY
-Route through approved adapters only.
+### `INSPECT`
 
-**Steps:**
-- **Description**: Load tool registry if present.
-  - **Action**: Parse tool schema (optional).
-  - **Source**: TOOL_SCHEMA
+- `description`: Identify what the target is and what already exists.
+- `inspect`: The target location, visible files or configuration, existing instructions, obvious entry points, and operator constraints.
+- `condition`: Stay within the target boundary unless another location is directly referenced.
+- `source`: Existing files, directory names, user-provided constraints, or environment metadata that is directly relevant.
 
-- **Description**: Enforce routing rules.
-  - **Policy**:
-    - Use designated search adapter.
-    - Use approved HTTP clients for REST.
-    - Prefer dedicated file tools for reading content.
-  - **Source**: API_ROUTING_POLICY
+### `DETERMINE`
 
-### SECRET_MANAGEMENT
-Never hardcode; load from vault only.
+- `description`: Decide the minimum requirement that blocks operation.
+- `action`: Choose the smallest applicable initialization step.
+- `condition`: If no change is needed, move directly to validation and report.
+- `output`: A short statement of the selected requirement and why it applies.
 
-**Steps:**
-- **Description**: Retrieve secrets via approved manager.
-  - **Action**: Load into memory; avoid disk writes.
-  - **Source**: SECURE_VAULT
+Possible minimum requirements include one missing instruction file, one directory, one configuration value, one dependency manifest, one validation command, or one documentation update. These are examples, not defaults.
 
-### CONTEXT_LOADING
-Index key docs and scripts; avoid raw loads.
+### `CREATE`
 
-**Steps:**
-- **Description**: Build index of md/json/yml files (paths + purpose).
-  - **Action**: Summarize without storing raw content.
-  - **Source**: FILE_SYSTEM_SCAN
+- `description`: Create only the selected missing artifact or structure.
+- `condition`: Skip creation when the target already contains a usable equivalent.
+- `action`: Preserve existing work and avoid duplicates.
+- `output`: The created or updated artifact, if any.
 
-### STARTUP_VALIDATION_AND_ROLLBACK
-Define pass criteria and READY signal.
+### `CONFIGURE`
 
-**Steps:**
-- **Description**: List diagnostics to run when enabled.
-  - **Action**: Document commands; skip execution by default.
-  - **Source**: DIAGNOSTIC_CHECKLIST
+- `description`: Connect the created or existing artifact to the target.
+- `condition`: Configure only what is required for the selected minimum step.
+- `action`: Update paths, references, scripts, permissions, or instructions when they are directly necessary.
 
-- **Description**: Announce READY upon criteria met.
-  - **Action**: Print concise readiness message.
-  - **Source**: SYSTEM_READINESS_SIGNAL
+### `VALIDATE`
 
-## EXECUTION_START
+- `description`: Prove the target can perform its intended minimum operation.
+- `validation`: Use the cheapest relevant check available, such as file existence, parseability, a documented command, a link between files, or a simple manual review.
+- `status`: Use `OPERATIONAL`, `OPERATIONAL_WITH_WARNINGS`, or `BLOCKED`.
 
-Create a tiny snapshot and announce READY.
+### `REPORT`
 
-**Steps:**
-- **Description**: Generate INIT_CONTEXT_SNAPSHOT.md (summary only).
-  - **Action**: Write directory overview + metrics headings.
-  - **Output File**: ./INIT_CONTEXT_SNAPSHOT.md
+Report:
 
-- **Description**: Print READY + snapshot path.
-  - **Action**: Log summary and await instructions.
-  - **Await Instructions**: true
+- target identified;
+- requirement selected;
+- artifacts created or updated;
+- configuration performed;
+- validation result;
+- remaining warnings or blockers;
+- final status.
+
+## Example Outcomes
+
+- A local directory with no documentation receives a concise `README.md`, then validates that the file identifies the target and next action.
+- A small code project with adequate documentation but no agent instructions receives an `AGENTS.md` only if agents will operate in it.
+- A target with all required artifacts receives no new files and reports `OPERATIONAL` after validation.

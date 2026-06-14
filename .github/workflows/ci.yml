@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: "npm"
@@ -22,3 +22,11 @@ jobs:
 
       - name: Run build
         run: npm run build
+
+      - name: Smoke test built entrypoint
+        run: |
+          test -f dist/index.html
+          if grep -q 'src="/src/main.tsx"' dist/index.html; then
+            echo "Smoke test failed: dist/index.html still references /src/main.tsx"
+            exit 1
+          fi

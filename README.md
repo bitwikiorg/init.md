@@ -85,6 +85,8 @@ The build runs `scripts/check-templates.mjs` before compiling the site. That che
 
 The public site is deployed with GitHub Pages from the existing Vite build. It renders the Markdown files under `templates/` as the canonical source and keeps copy-to-clipboard behavior for exact template content.
 
+GitHub Pages must use **Build and deployment > Source: GitHub Actions** for this repository. Do not use **Deploy from a branch > root**, because that serves the unbuilt Vite source files and the browser will try to load `/src/main.tsx` directly.
+
 Repository: <https://github.com/bitwikiorg/init.md>
 
 ## 10. BIThub Discussion And Guides

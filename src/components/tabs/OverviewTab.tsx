@@ -47,23 +47,20 @@ export function OverviewTab() {
     <div className="space-y-8">
       <Card className="rounded-md border-2 shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl">A procedure, not a scaffold</CardTitle>
+          <CardTitle className="text-2xl">A procedure, not a file dump</CardTitle>
           <CardDescription className="text-base leading-7">
-            The canonical file defines the general initialization procedure. Templates specialize that procedure for
-            specific targets.
+            init.md gives you a process. Templates help you copy target-specific instructions.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
           <div className="space-y-4 text-sm leading-7 text-muted-foreground sm:text-base">
             <p>
-              init.md determines what a target needs in order to become operational. A target might be a new project,
-              an existing repository, an agent workspace, a server, a research directory, or a service being restored in
-              a new environment.
+              This site is for copying init instructions and templates. Start with the target, then copy only what is
+              needed.
             </p>
             <p>
-              The target determines the implementation. A server may need host diagnostics and firewall review. A
-              development project may need build commands. An agent may need instructions and tool boundaries. A minimal
-              target may need only one missing file and one validation step.
+              A server, project, or agent workspace will need different steps. The template is a starting point, not
+              a strict checklist.
             </p>
           </div>
           <div className="rounded-md border bg-background p-4">
@@ -102,17 +99,17 @@ export function OverviewTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">
             <ListChecks size={22} />
-            Operational means validated
+            Done means validated
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 text-sm leading-6 text-background/80 md:grid-cols-2">
           <div className="flex gap-3">
             <CheckCircle className="mt-0.5 shrink-0" size={18} />
-            <p>Success requires a validation step derived from the target, not a generic success banner.</p>
+            <p>Do not mark complete without a target-specific validation check.</p>
           </div>
           <div className="flex gap-3">
             <CheckCircle className="mt-0.5 shrink-0" size={18} />
-            <p>No output file is universal. README, PRD, snapshot, server report, and AGENTS.md are conditional.</p>
+            <p>Output files are conditional. Only create files that this target actually needs.</p>
           </div>
         </CardContent>
       </Card>

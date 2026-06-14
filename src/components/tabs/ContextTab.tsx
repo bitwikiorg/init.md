@@ -37,8 +37,7 @@ export function ContextTab() {
         <CardHeader>
           <CardTitle className="text-2xl">The target determines the implementation</CardTitle>
           <CardDescription className="text-base leading-7">
-            What is order for one target can be irrelevant noise for another. init.md keeps the root procedure general
-            and moves concrete requirements into templates.
+            What helps one target can be noise for another. Use the root process and copy only matching template steps.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
@@ -62,12 +61,10 @@ export function ContextTab() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground sm:text-base">
             <p>
-              The protocol preserves valid existing files, updates incomplete files when appropriate, avoids duplicates,
-              and identifies conflicts before changing them.
+              Keep valid existing files, update incomplete files when needed, and avoid duplicates.
             </p>
             <p>
-              A substantial README should not be replaced by a template. Existing agent instructions should be preserved
-              when valid. Local project conventions should shape any new artifacts.
+              Do not overwrite good docs with template text. Preserve useful existing instructions.
             </p>
           </CardContent>
         </Card>
@@ -79,9 +76,7 @@ export function ContextTab() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground sm:text-base">
             <p>
-              A development project might validate with a build, lint, test, or documented command review. A server may
-              validate service status and network readiness. An agent may validate instructions, tools, and startup
-              expectations.
+              Validate with evidence that matches the target: build/test, service status, or instruction/tool checks.
             </p>
             <p>Do not declare success without a validation step connected to the target's intended result.</p>
           </CardContent>
@@ -115,9 +110,8 @@ export function ContextTab() {
         </CardHeader>
         <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground sm:text-base">
           <p>
-            During inspection, determine whether the target will be operated or modified by AI agents. If agent guidance
-            is useful and absent, derive `AGENTS.md` from the actual target. Different projects should have different
-            instructions, and nested projects may need nested scopes.
+            During inspection, check whether AI agents will operate on the target. Create AGENTS.md only when it helps
+            this specific target.
           </p>
           <div className="flex flex-wrap gap-2">
             {['OPERATIONAL', 'OPERATIONAL_WITH_WARNINGS', 'BLOCKED', 'DRY_RUN_COMPLETE'].map((state) => (

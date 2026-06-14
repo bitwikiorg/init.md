@@ -61,25 +61,12 @@ function App() {
           <div>
             <p className="font-semibold">init.md</p>
             <p className="mt-2 max-w-2xl text-sm text-background/75">
-              A general operational initialization protocol from the BITwiki ecosystem. Inspect what exists, determine
-              what is needed, create what applies, validate the result, and report what became operational.
+              Copy init instructions and templates for your target. Keep only what applies.
             </p>
           </div>
           <nav className="flex flex-wrap gap-3 text-sm md:justify-end" aria-label="Footer links">
             <a className="underline-offset-4 hover:underline" href="https://github.com/bitwikiorg/init.md" target="_blank" rel="noreferrer">
               GitHub
-            </a>
-            <a className="underline-offset-4 hover:underline" href="https://hub.bitwiki.org/" target="_blank" rel="noreferrer">
-              BIThub
-            </a>
-            <a className="underline-offset-4 hover:underline" href="https://hub.bitwiki.org/c/platform/guides/28" target="_blank" rel="noreferrer">
-              Guides
-            </a>
-            <a className="underline-offset-4 hover:underline" href="https://bitwiki.org/" target="_blank" rel="noreferrer">
-              BITwiki
-            </a>
-            <a className="underline-offset-4 hover:underline" href="https://github.com/bitwikiorg/init.md/blob/main/LICENSE" target="_blank" rel="noreferrer">
-              MIT License
             </a>
           </nav>
           </div>

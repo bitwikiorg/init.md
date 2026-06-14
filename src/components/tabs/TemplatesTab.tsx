@@ -1,7 +1,7 @@
 import { createElement, useCallback, useMemo, useState } from "react"
 import { marked } from "marked"
 import { toast } from "sonner"
-import { ArrowRight, CaretLeft, CaretRight, CheckCircle, Copy, GithubLogo } from "@phosphor-icons/react"
+import { CaretLeft, CaretRight, CheckCircle, Copy } from "@phosphor-icons/react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -64,8 +64,7 @@ export function TemplatesTab() {
         <div>
           <h3 className="text-2xl font-bold">Canonical Templates</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-            These cards render the Markdown files in `templates/`. The copy action copies the exact canonical file
-            content, including metadata.
+            Preview templates from templates/. Copy Markdown and paste it into your init workflow.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -117,12 +116,6 @@ export function TemplatesTab() {
                 {copiedStates[template.id] ? <CheckCircle size={16} /> : <Copy size={16} />}
                 Copy Markdown
               </Button>
-              <Button variant="outline" size="sm" asChild>
-                <a href={template.sourceUrl} target="_blank" rel="noreferrer">
-                  <GithubLogo size={16} />
-                  Source
-                </a>
-              </Button>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -157,15 +150,6 @@ export function TemplatesTab() {
           <div className="rounded-md border bg-card p-4">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h4 className="text-lg font-semibold">Rendered Markdown</h4>
-              <a
-                href={template.sourceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 text-sm font-medium underline-offset-4 hover:underline"
-              >
-                Open source file
-                <ArrowRight size={14} />
-              </a>
             </div>
             <div className="markdown-surface" dangerouslySetInnerHTML={{ __html: renderedTemplate }} />
           </div>

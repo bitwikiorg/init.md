@@ -92,9 +92,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "minimal",
     title: "Minimal",
-    summary: "Smallest reasonable initialization pass for a narrow operational gap.",
+    summary: "Small init pass for one clear gap.",
     description:
-      "Inspect a small target, identify the least missing requirement, create or configure only that requirement, validate it, and report the result.",
+      "Inspect a small target, add only the missing requirement, validate it, and report status.",
     category: "General",
     sourcePath: "templates/minimal_init_protocol.md",
     sourceUrl: sourceUrl("templates/minimal_init_protocol.md"),
@@ -106,9 +106,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "dry-run",
     title: "Dry Run",
-    summary: "Plan initialization work across target types without mutating the target.",
+    summary: "Plan init work without changing files or systems.",
     description:
-      "Inspect the target, determine requirements, propose the active work, and report what would become operational without creating files or changing state.",
+      "Inspect the target, list required work, and report what would become operational.",
     category: "General",
     sourcePath: "templates/dry_run_init_protocol.md",
     sourceUrl: sourceUrl("templates/dry_run_init_protocol.md"),
@@ -120,9 +120,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "development-project",
     title: "Development Project",
-    summary: "Initialize repositories, apps, packages, CLIs, websites, and monorepos.",
+    summary: "Init template for repositories and software projects.",
     description:
-      "Inspect the actual project shape, decide which developer artifacts and commands apply, configure the workflow, and validate development readiness.",
+      "Inspect project shape, choose the right artifacts and commands, then validate development readiness.",
     category: "Target-specific",
     sourcePath: "templates/development_project_init_protocol.md",
     sourceUrl: sourceUrl("templates/development_project_init_protocol.md"),
@@ -134,9 +134,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "agent",
     title: "Agent",
-    summary: "Initialize agent instructions, tools, prompts, state, and startup checks.",
+    summary: "Init template for agent instructions and tool boundaries.",
     description:
-      "Determine what a specific agent target needs, preserve valid instructions, create only useful agent artifacts, and validate readiness.",
+      "Define what the agent target needs, keep valid instructions, add missing parts, and validate readiness.",
     category: "Target-specific",
     sourcePath: "templates/agent_init_protocol.md",
     sourceUrl: sourceUrl("templates/agent_init_protocol.md"),
@@ -148,9 +148,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "server",
     title: "Server",
-    summary: "Server, service-host, infrastructure, and deployment readiness pattern.",
+    summary: "Init template for server and deployment readiness.",
     description:
-      "Move host diagnostics, services, networking, secrets, logging, backups, and deployment checks into the server-specific layer where they belong.",
+      "Handle host checks, services, networking, and deployment validation in a server-specific flow.",
     category: "Target-specific",
     sourcePath: "templates/server_init_protocol.md",
     sourceUrl: sourceUrl("templates/server_init_protocol.md"),

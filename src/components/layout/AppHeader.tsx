@@ -1,4 +1,4 @@
-import { BookOpen, ChatsCircle, GithubLogo, Globe, Stack } from "@phosphor-icons/react"
+import { Stack } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 
 interface AppHeaderProps {
@@ -15,7 +15,7 @@ export function AppHeader({ onSelectTab }: AppHeaderProps) {
           </div>
           <div>
             <h1 className="text-xl font-black tracking-normal sm:text-2xl">init.md</h1>
-            <p className="text-sm text-muted-foreground">General operational initialization protocol</p>
+            <p className="text-sm text-muted-foreground">Copy init instructions and templates</p>
           </div>
         </div>
 
@@ -23,30 +23,6 @@ export function AppHeader({ onSelectTab }: AppHeaderProps) {
           <Button type="button" variant="ghost" size="sm" onClick={() => onSelectTab("templates")}>
             <Stack size={16} />
             Templates
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <a href="https://github.com/bitwikiorg/init.md" target="_blank" rel="noreferrer">
-              <GithubLogo size={16} />
-              GitHub
-            </a>
-          </Button>
-          <Button variant="default" size="sm" asChild>
-            <a href="https://hub.bitwiki.org/" target="_blank" rel="noreferrer">
-              <ChatsCircle size={16} />
-              Discuss on BIThub
-            </a>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <a href="https://hub.bitwiki.org/c/platform/guides/28" target="_blank" rel="noreferrer">
-              <BookOpen size={16} />
-              Guides
-            </a>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <a href="https://bitwiki.org/" target="_blank" rel="noreferrer">
-              <Globe size={16} />
-              BITwiki
-            </a>
           </Button>
         </nav>
       </div>

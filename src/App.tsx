@@ -61,7 +61,7 @@ function App() {
           <div>
             <p className="font-semibold">init.md</p>
             <p className="mt-2 max-w-2xl text-sm text-background/75">
-              Copy init.md or an init template. Keep only what applies to the target.
+              Copy a plain init instruction. Keep only what applies to the target.
             </p>
           </div>
           <nav className="flex flex-wrap gap-3 text-sm md:justify-end" aria-label="Footer links">

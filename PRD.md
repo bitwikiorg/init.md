@@ -49,16 +49,15 @@ Examples:
 - Generate a snapshot only when a point-in-time record is useful.
 - Generate a server report only for server or infrastructure targets.
 
-## Canonical Markdown Source
+## Template Source And Copy Behavior
 
-The Markdown files under `templates/` are the canonical source of template content. The website imports those Markdown files directly with Vite raw imports.
+The Markdown files under `templates/` are the canonical source for template metadata. The public copy action must copy practical init instructions, not raw source Markdown, YAML frontmatter, or template-system metadata.
 
 The template browser must:
 
-- render content from the canonical Markdown files;
 - parse and display template metadata;
-- copy root `init.md` and template Markdown content;
-- copy the exact canonical Markdown content, including metadata;
+- show the exact plain instruction that will be copied;
+- copy concise root and template init instructions without YAML frontmatter;
 - avoid storing complete template bodies as TypeScript strings.
 
 The build runs a template integrity check that verifies the expected template files and metadata fields exist.
@@ -108,7 +107,7 @@ GitHub Pages remains the public interface. The existing deploy workflow builds t
 - Existing minimal, server, and dry-run template concepts are preserved and corrected.
 - Development-project and agent templates exist.
 - Templates include metadata and optional outputs.
-- The website renders canonical Markdown template files and copies exact source content.
+- The website displays template metadata and copies concise, functional init instructions without source metadata.
 - GitHub and BIThub links are visible in the header and footer only.
 - README and PRD describe the corrected model.
 - Production build succeeds without adding a backend or execution runtime.

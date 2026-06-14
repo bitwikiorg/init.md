@@ -20,12 +20,12 @@ export function HeroSection({ onSelectTab }: HeroSectionProps) {
               Initialize what the target actually needs.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              Copy init.md for the root procedure. Copy a template when you need target-specific init instructions.
-              Keep only what helps the target become ready.
+              Copy a plain init instruction for the target. Use the root instruction for general init, or a template
+              instruction when the target is more specific.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" type="button" onClick={() => onSelectTab("templates")}>
-                Copy templates
+                Copy instructions
                 <ArrowRight size={18} />
               </Button>
               <Button size="lg" variant="outline" type="button" onClick={() => onSelectTab("quickstart")}>

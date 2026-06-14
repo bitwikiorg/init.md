@@ -49,7 +49,7 @@ export function OverviewTab() {
         <CardHeader>
           <CardTitle className="text-2xl">A procedure, not a scaffold</CardTitle>
           <CardDescription className="text-base leading-7">
-            Copy init.md for the general procedure. Copy a template when the target needs specific init instructions.
+            Copy a practical init instruction, not source metadata. Use the root flow or a target-specific template.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">

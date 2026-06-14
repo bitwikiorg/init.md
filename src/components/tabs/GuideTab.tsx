@@ -9,8 +9,8 @@ const workflow = [
     body: "Name what init.md is being used on, where it lives, and what ready means for that target.",
   },
   {
-    title: "Choose init.md or a template",
-    body: "Use init.md for the root procedure. Use a template when the target needs a more specific init path.",
+    title: "Choose root or template",
+    body: "Use the root instruction for general init. Use a template instruction when the target has a clearer shape.",
   },
   {
     title: "Copy only useful init text",
@@ -31,10 +31,10 @@ const workflow = [
 ]
 
 const examples = [
-  "Copy init.md into this target and initialize only what applies.",
-  "Use templates/development_project_init_protocol.md to initialize this repository.",
-  "Run templates/dry_run_init_protocol.md and report the init work without changing files.",
-  "Use templates/agent_init_protocol.md only if this target needs agent instructions.",
+  "Use the root init instruction to initialize this target. Apply only what fits.",
+  "Use the development-project init instruction to initialize this repository.",
+  "Use the dry-run init instruction and report proposed work without changing files.",
+  "Use the agent init instruction only if this target needs agent guidance.",
 ]
 
 export function GuideTab() {
@@ -53,7 +53,7 @@ export function GuideTab() {
         <CardHeader>
           <CardTitle className="text-2xl">Use init.md directly</CardTitle>
           <CardDescription className="text-base leading-7">
-            Start with the target. Copy init.md or the closest template, then keep only the init work that applies.
+            Start with the target. Copy the plain instruction that fits, then keep only the init work that applies.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -85,7 +85,7 @@ export function GuideTab() {
               for agent instructions, and server for host or deployment readiness.
             </p>
             <p>
-              If no template fits, copy init.md and write a short target-specific init plan before making changes.
+              If no template fits, use the root instruction and write a short target-specific init plan before making changes.
             </p>
           </CardContent>
         </Card>

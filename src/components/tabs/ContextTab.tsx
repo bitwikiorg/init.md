@@ -5,11 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const relationships = [
   {
     title: "Root protocol",
-    body: "Copy init.md when you need the general inspect, determine, create, configure, validate, and report process.",
+    body: "Copy the root instruction when you need the general inspect, determine, create, configure, validate, and report flow.",
   },
   {
     title: "Template",
-    body: "Copy a template when the target needs specific init instructions for a project, agent, server, dry run, or small gap.",
+    body: "Copy a template instruction when the target is a project, agent, server, dry run, or small gap.",
   },
   {
     title: "Generated output",

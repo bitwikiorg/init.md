@@ -1,18 +1,43 @@
 import { createElement, useCallback, useMemo, useState } from "react"
-import { marked } from "marked"
 import { toast } from "sonner"
 import { CaretLeft, CaretRight, CheckCircle, Copy, FileText } from "@phosphor-icons/react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { templates } from "@/data/templates"
-import rootProtocolContent from "../../../init.md?raw"
+import { templates, type TemplateDefinition } from "@/data/templates"
 
-function stripFrontmatter(content: string) {
-  return content.replace(/^---\n[\s\S]*?\n---\n?/, "")
+const rootInstruction = `Use init.md to initialize this target.
+
+Target: [describe the target]
+Mode: active
+Goal: make the target ready for its intended use.
+
+Do this:
+1. Inspect only the target and directly relevant files, settings, or services.
+2. Determine what the target actually needs.
+3. Create or configure only the missing init work that applies.
+4. Preserve valid existing work. Do not create universal files by default.
+5. Validate with a check tied to the target's real use.
+6. Report what was inspected, changed, validated, warnings or blockers, and final status.`
+
+function buildTemplateInstruction(template: TemplateDefinition) {
+  return `Use ${template.metadata.name} to initialize this target.
+
+Target: [describe the target]
+Best fit: ${template.metadata.target}
+Mode: ${template.metadata.mode.join(" or ")}
+Goal: ${template.metadata.purpose}
+
+Do this:
+1. Inspect the target and existing work before changing anything.
+2. Apply this template only where it fits the target.
+3. Create or configure only what is required for this target.
+4. Skip optional outputs unless they clearly help operation.
+5. Validate with checks that prove this target is ready.
+6. Report inspected evidence, changes made, validation result, remaining blockers, and final status.`
 }
 
-function MetadataList({ title, items }: { title: string; items: string[] }) {
+function ReferenceList({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="rounded-md border bg-background p-4">
       <h5 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">{title}</h5>
@@ -28,26 +53,39 @@ function MetadataList({ title, items }: { title: string; items: string[] }) {
   )
 }
 
+function CopyPreview({ content }: { content: string }) {
+  return (
+    <div className="rounded-md border bg-background p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h5 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">Copied text</h5>
+        <Badge variant="outline" className="rounded-sm">
+          no metadata
+        </Badge>
+      </div>
+      <pre className="max-h-72 overflow-auto whitespace-pre-wrap break-words rounded-sm bg-muted p-3 text-sm leading-6 text-foreground">
+        {content}
+      </pre>
+    </div>
+  )
+}
+
 export function TemplatesTab() {
   const [activeTemplate, setActiveTemplate] = useState(0)
   const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({})
 
   const template = templates[activeTemplate]
-  const renderedTemplate = useMemo(
-    () => marked.parse(stripFrontmatter(template.content), { async: false }) as string,
-    [template.content],
-  )
+  const templateInstruction = useMemo(() => buildTemplateInstruction(template), [template])
 
   const copyToClipboard = useCallback(async (content: string, id: string) => {
     try {
       await navigator.clipboard.writeText(content)
       setCopiedStates((prev) => ({ ...prev, [id]: true }))
-      toast.success("Markdown copied")
+      toast.success("Instruction copied")
       setTimeout(() => {
         setCopiedStates((prev) => ({ ...prev, [id]: false }))
       }, 2000)
     } catch {
-      toast.error("Failed to copy Markdown")
+      toast.error("Failed to copy instruction")
     }
   }, [])
 
@@ -63,9 +101,9 @@ export function TemplatesTab() {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h3 className="text-2xl font-bold">Copy init files</h3>
+          <h3 className="text-2xl font-bold">Copy init instructions</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-            Copy init.md for the root procedure. Copy a template when the target needs more specific init instructions.
+            Buttons copy the plain instruction shown on the card. They do not copy YAML metadata or the full source file.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -92,22 +130,24 @@ export function TemplatesTab() {
                 </Badge>
                 <CardTitle className="text-2xl">init.md</CardTitle>
                 <CardDescription className="mt-3 max-w-3xl text-sm leading-6 sm:text-base">
-                  The root initialization procedure. Copy this when you need the general inspect, determine, create,
-                  configure, validate, and report flow.
+                  Copy this when the target needs the general init flow and no specific template fits yet.
                 </CardDescription>
               </div>
             </div>
             <Button
               variant="default"
               size="sm"
-              onClick={() => copyToClipboard(rootProtocolContent, "root-protocol")}
+              onClick={() => copyToClipboard(rootInstruction, "root-protocol")}
               className="shrink-0 lg:justify-self-end"
             >
               {copiedStates["root-protocol"] ? <CheckCircle size={16} /> : <Copy size={16} />}
-              Copy init.md
+              Copy instruction
             </Button>
           </div>
         </CardHeader>
+        <CardContent>
+          <CopyPreview content={rootInstruction} />
+        </CardContent>
       </Card>
 
       <Card className="overflow-hidden rounded-md border-2 shadow-none">
@@ -140,11 +180,11 @@ export function TemplatesTab() {
               <Button
                 variant="default"
                 size="sm"
-                onClick={() => copyToClipboard(template.content, template.id)}
+                onClick={() => copyToClipboard(templateInstruction, template.id)}
                 className="shrink-0"
               >
                 {copiedStates[template.id] ? <CheckCircle size={16} /> : <Copy size={16} />}
-                Copy template
+                Copy instruction
               </Button>
             </div>
           </div>
@@ -158,15 +198,17 @@ export function TemplatesTab() {
         </CardHeader>
 
         <CardContent className="space-y-6">
+          <CopyPreview content={templateInstruction} />
+
           <div className="grid gap-4 lg:grid-cols-3">
-            <MetadataList title="Creates" items={template.metadata.creates} />
-            <MetadataList title="Configures" items={template.metadata.configures} />
-            <MetadataList title="Validates" items={template.metadata.validates} />
+            <ReferenceList title="May create" items={template.metadata.creates} />
+            <ReferenceList title="May configure" items={template.metadata.configures} />
+            <ReferenceList title="Validates with" items={template.metadata.validates} />
           </div>
 
           <div className="rounded-md border bg-background p-4">
             <h5 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Optional outputs
+              Optional outputs, reference only
             </h5>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {template.metadata.optional_outputs.map((output) => (
@@ -177,10 +219,6 @@ export function TemplatesTab() {
             </div>
           </div>
 
-          <div className="rounded-md border bg-card p-4">
-            <h4 className="mb-4 text-lg font-semibold">Template preview</h4>
-            <div className="markdown-surface" dangerouslySetInnerHTML={{ __html: renderedTemplate }} />
-          </div>
         </CardContent>
       </Card>
 

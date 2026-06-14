@@ -57,7 +57,7 @@ The template browser must:
 
 - render content from the canonical Markdown files;
 - parse and display template metadata;
-- provide source links to each Markdown file;
+- copy root `init.md` and template Markdown content;
 - copy the exact canonical Markdown content, including metadata;
 - avoid storing complete template bodies as TypeScript strings.
 
@@ -74,18 +74,16 @@ The public interface should communicate:
 - the relationship between the root protocol and templates;
 - conditional generated outputs;
 - target-specific agent instructions;
-- BIThub as the discussion and contribution destination.
+- GitHub and BIThub as header and footer destinations, with content reserved for init guidance and copy actions.
 
 ## BITwiki And BIThub Integration
 
 The visual and editorial system should align with the BITwiki ecosystem through strong black, white, and neutral structure, high-contrast typography, geometric protocol surfaces, restrained accents, and precise technical language.
 
-Required public links:
+Required public links, limited to header and footer:
 
 - GitHub repository: <https://github.com/bitwikiorg/init.md>
 - BIThub forum: <https://hub.bitwiki.org/>
-- BIThub Guides: <https://hub.bitwiki.org/c/platform/guides/28>
-- BITwiki: <https://bitwiki.org/>
 
 BIThub is presented as the place to discuss the protocol, ask questions, share templates, propose improvements, and report implementation experiences.
 
@@ -111,6 +109,6 @@ GitHub Pages remains the public interface. The existing deploy workflow builds t
 - Development-project and agent templates exist.
 - Templates include metadata and optional outputs.
 - The website renders canonical Markdown template files and copies exact source content.
-- GitHub, BIThub, Guides, and BITwiki links are visible.
+- GitHub and BIThub links are visible in the header and footer only.
 - README and PRD describe the corrected model.
 - Production build succeeds without adding a backend or execution runtime.

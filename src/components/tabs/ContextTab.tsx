@@ -5,19 +5,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const relationships = [
   {
     title: "Root protocol",
-    body: "Defines the general process: inspect, determine, create, configure, validate, and report.",
+    body: "Copy init.md when you need the general inspect, determine, create, configure, validate, and report process.",
   },
   {
     title: "Template",
-    body: "Specializes the process for a target category such as server, development project, agent, dry run, or minimal initialization.",
+    body: "Copy a template when the target needs specific init instructions for a project, agent, server, dry run, or small gap.",
   },
   {
     title: "Generated output",
-    body: "Exists only when the target or selected template requires it. No output file is universal.",
+    body: "Create output only when the selected init path requires it. No output file is universal.",
   },
   {
     title: "Validation result",
-    body: "States whether the target is operational, operational with warnings, blocked, or complete as a dry run.",
+    body: "Report whether the target is ready, ready with warnings, blocked, or complete as a dry run.",
   },
 ]
 
@@ -37,7 +37,7 @@ export function ContextTab() {
         <CardHeader>
           <CardTitle className="text-2xl">The target determines the implementation</CardTitle>
           <CardDescription className="text-base leading-7">
-            What helps one target can be noise for another. Use the root process and copy only matching template steps.
+            Useful init work depends on the target. init.md stays general; templates hold the target-specific details.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
@@ -61,10 +61,12 @@ export function ContextTab() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground sm:text-base">
             <p>
-              Keep valid existing files, update incomplete files when needed, and avoid duplicates.
+              Keep valid existing files. Update incomplete files when useful. Avoid duplicates and identify conflicts
+              before changing them.
             </p>
             <p>
-              Do not overwrite good docs with template text. Preserve useful existing instructions.
+              Do not replace a useful README with a template. Preserve valid agent instructions. Let local conventions
+              shape any new init output.
             </p>
           </CardContent>
         </Card>
@@ -76,9 +78,10 @@ export function ContextTab() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground sm:text-base">
             <p>
-              Validate with evidence that matches the target: build/test, service status, or instruction/tool checks.
+              A project might validate with a build, lint, test, or command review. A server may validate service status
+              and network readiness. An agent may validate instructions, tools, and startup expectations.
             </p>
-            <p>Do not declare success without a validation step connected to the target's intended result.</p>
+            <p>Do not declare success without a validation step connected to the target.</p>
           </CardContent>
         </Card>
       </div>
@@ -86,7 +89,7 @@ export function ContextTab() {
       <Card className="rounded-md shadow-none">
         <CardHeader>
           <CardTitle>Conditional outputs</CardTitle>
-          <CardDescription>No output file is universally required except where the selected target or template requires it.</CardDescription>
+          <CardDescription>Create these only when the selected init path calls for them.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 md:grid-cols-2">
@@ -106,12 +109,12 @@ export function ContextTab() {
             <GitBranch size={20} />
             Agent instructions are conditional
           </CardTitle>
-          <CardDescription>AGENTS.md is important when agents operate in a target, but it is not installed everywhere.</CardDescription>
+          <CardDescription>AGENTS.md matters for agent-operated targets, but it is not installed everywhere.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground sm:text-base">
           <p>
-            During inspection, check whether AI agents will operate on the target. Create AGENTS.md only when it helps
-            this specific target.
+            During inspection, decide whether agents will operate on the target. If agent guidance is useful and absent,
+            derive `AGENTS.md` from the target. Different projects may need different instructions.
           </p>
           <div className="flex flex-wrap gap-2">
             {['OPERATIONAL', 'OPERATIONAL_WITH_WARNINGS', 'BLOCKED', 'DRY_RUN_COMPLETE'].map((state) => (

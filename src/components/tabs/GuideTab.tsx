@@ -6,42 +6,42 @@ import { toast } from "sonner"
 const workflow = [
   {
     title: "Identify the target",
-    body: "State what you are initializing and what outcome should be operational.",
+    body: "Name what init.md is being used on, where it lives, and what ready means for that target.",
   },
   {
-    title: "Choose the closest template",
-    body: "Pick minimal, dry run, development project, agent, or server based on the target.",
+    title: "Choose init.md or a template",
+    body: "Use init.md for the root procedure. Use a template when the target needs a more specific init path.",
   },
   {
-    title: "Copy or adapt the template",
-    body: "Copy the template, then remove steps that do not apply.",
+    title: "Copy only useful init text",
+    body: "Copy the exact file, then remove instructions that do not apply before using it on the target.",
   },
   {
-    title: "Run the initialization procedure",
-    body: "Inspect, determine, create, and configure only what is required.",
+    title: "Run the init procedure",
+    body: "Inspect what exists, decide what is missing, create or configure only what applies, then validate it.",
   },
   {
-    title: "Review the validation result",
-    body: "Use relevant checks to confirm the target is operational.",
+    title: "Review validation",
+    body: "Use checks that match the target: commands, configuration, service health, or instruction consistency.",
   },
   {
-    title: "Keep the target-specific init.md",
-    body: "Keep instructions specific to this target, not a generic checklist.",
+    title: "Keep the init result specific",
+    body: "The final instructions should explain this target, not a generic checklist copied forward forever.",
   },
 ]
 
 const examples = [
-  "Use init.md to initialize this repository. Copy templates/development_project_init_protocol.md and remove steps that do not apply.",
-  "Use init.md in dry-run mode for this server. Copy templates/server_init_protocol.md and return only a plan and validation checks.",
-  "Use init.md to set up this agent workspace. Copy templates/agent_init_protocol.md and create only target-specific instructions.",
-  "Use init.md minimal mode. Copy templates/minimal_init_protocol.md and make the smallest change needed to pass validation.",
+  "Copy init.md into this target and initialize only what applies.",
+  "Use templates/development_project_init_protocol.md to initialize this repository.",
+  "Run templates/dry_run_init_protocol.md and report the init work without changing files.",
+  "Use templates/agent_init_protocol.md only if this target needs agent instructions.",
 ]
 
 export function GuideTab() {
   const copyExample = async (example: string) => {
     try {
       await navigator.clipboard.writeText(example)
-      toast.success("Init instruction copied")
+      toast.success("Example copied")
     } catch {
       toast.error("Failed to copy example")
     }
@@ -51,9 +51,9 @@ export function GuideTab() {
     <div className="space-y-8">
       <Card className="rounded-md border-2 shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl">Use this page to copy init instructions</CardTitle>
+          <CardTitle className="text-2xl">Use init.md directly</CardTitle>
           <CardDescription className="text-base leading-7">
-            Start with the target. Copy the matching template and adapt it.
+            Start with the target. Copy init.md or the closest template, then keep only the init work that applies.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,15 +77,15 @@ export function GuideTab() {
         <Card className="rounded-md shadow-none">
           <CardHeader>
             <CardTitle>Template selection</CardTitle>
-            <CardDescription>Choose the template that best matches the target.</CardDescription>
+            <CardDescription>Choose the init pattern that matches the target.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground sm:text-base">
             <p>
-              Use minimal for small gaps, dry run for planning, development project for codebases, agent for
-              agent setup, and server for host readiness.
+              Use minimal for one clear gap, dry run for no-change planning, development project for codebases, agent
+              for agent instructions, and server for host or deployment readiness.
             </p>
             <p>
-              If no template fits, use the root protocol and write a target-specific plan with validation criteria.
+              If no template fits, copy init.md and write a short target-specific init plan before making changes.
             </p>
           </CardContent>
         </Card>
@@ -93,7 +93,7 @@ export function GuideTab() {
         <Card className="rounded-md shadow-none">
           <CardHeader>
             <CardTitle>Example instructions</CardTitle>
-            <CardDescription>Copy one and paste it into your workflow.</CardDescription>
+            <CardDescription>Copy one when asking someone or an agent to run init.md.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {examples.map((example) => (
@@ -112,7 +112,7 @@ export function GuideTab() {
       <Card className="rounded-md bg-card shadow-none">
         <CardHeader>
           <CardTitle>Completion review</CardTitle>
-          <CardDescription>Before marking complete, make sure your report answers these questions.</CardDescription>
+          <CardDescription>Before calling the target operational, check that the report answers these questions.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-2">
           {[

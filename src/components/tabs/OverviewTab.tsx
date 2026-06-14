@@ -47,20 +47,20 @@ export function OverviewTab() {
     <div className="space-y-8">
       <Card className="rounded-md border-2 shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl">A procedure, not a file dump</CardTitle>
+          <CardTitle className="text-2xl">A procedure, not a scaffold</CardTitle>
           <CardDescription className="text-base leading-7">
-            init.md gives you a process. Templates help you copy target-specific instructions.
+            Copy init.md for the general procedure. Copy a template when the target needs specific init instructions.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
           <div className="space-y-4 text-sm leading-7 text-muted-foreground sm:text-base">
             <p>
-              This site is for copying init instructions and templates. Start with the target, then copy only what is
-              needed.
+              init.md helps determine what a target needs to become ready. A target might be a repository, an agent
+              workspace, a server, a research directory, or a service being restored in a new environment.
             </p>
             <p>
-              A server, project, or agent workspace will need different steps. The template is a starting point, not
-              a strict checklist.
+              The target decides the work. A server may need host checks. A project may need build commands. An agent may
+              need instructions and tool boundaries. A small target may need one file and one validation step.
             </p>
           </div>
           <div className="rounded-md border bg-background p-4">
@@ -99,17 +99,17 @@ export function OverviewTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">
             <ListChecks size={22} />
-            Done means validated
+            Operational means validated
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 text-sm leading-6 text-background/80 md:grid-cols-2">
           <div className="flex gap-3">
             <CheckCircle className="mt-0.5 shrink-0" size={18} />
-            <p>Do not mark complete without a target-specific validation check.</p>
+            <p>Success requires a validation step tied to the target.</p>
           </div>
           <div className="flex gap-3">
             <CheckCircle className="mt-0.5 shrink-0" size={18} />
-            <p>Output files are conditional. Only create files that this target actually needs.</p>
+            <p>No output file is universal. README, PRD, snapshot, server report, and AGENTS.md are conditional.</p>
           </div>
         </CardContent>
       </Card>

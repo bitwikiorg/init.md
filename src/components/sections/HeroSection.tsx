@@ -14,24 +14,23 @@ export function HeroSection({ onSelectTab }: HeroSectionProps) {
         <div className="container mx-auto grid gap-10 px-4 py-12 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div className="max-w-3xl">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              init.md protocol
+              BITwiki open protocol
             </p>
             <h2 className="text-4xl font-black leading-tight tracking-normal text-foreground sm:text-5xl lg:text-6xl">
-              Copy init instructions that match your target.
+              Initialize what the target actually needs.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              Use init.md to inspect the target, pick the right template, copy what applies, and validate the result.
+              Copy init.md for the root procedure. Copy a template when you need target-specific init instructions.
+              Keep only what helps the target become ready.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" type="button" onClick={() => onSelectTab("templates")}>
-                Explore templates
+                Copy templates
                 <ArrowRight size={18} />
               </Button>
-              <Button size="lg" variant="outline" asChild>
-                <a href="https://github.com/bitwikiorg/init.md/blob/main/init.md" target="_blank" rel="noreferrer">
-                  <BookOpen size={18} />
-                  Read the protocol
-                </a>
+              <Button size="lg" variant="outline" type="button" onClick={() => onSelectTab("quickstart")}>
+                <BookOpen size={18} />
+                Read guide
               </Button>
             </div>
           </div>
@@ -50,7 +49,7 @@ export function HeroSection({ onSelectTab }: HeroSectionProps) {
               ))}
             </div>
             <p className="mt-4 border-t border-border pt-4 text-sm leading-6 text-muted-foreground">
-              Start from the root protocol, then copy the template sections that fit the target.
+              Use this sequence to decide what init instructions, files, or checks actually apply.
             </p>
           </div>
         </div>

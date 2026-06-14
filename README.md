@@ -83,19 +83,17 @@ The build runs `scripts/check-templates.mjs` before compiling the site. That che
 
 ## 9. Website
 
-The public site is deployed with GitHub Pages from the existing Vite build. It renders the Markdown files under `templates/` as the canonical source and keeps copy-to-clipboard behavior for exact template content.
+The public site is deployed with GitHub Pages from the existing Vite build. It renders the Markdown files under `templates/` as the canonical source and keeps copy-to-clipboard behavior for root `init.md` and exact template content.
 
 GitHub Pages must use **Build and deployment > Source: GitHub Actions** for this repository. Do not use **Deploy from a branch > root**, because that serves the unbuilt Vite source files and the browser will try to load `/src/main.tsx` directly.
 
 Repository: <https://github.com/bitwikiorg/init.md>
 
-## 10. BIThub Discussion And Guides
+## 10. BIThub Discussion
 
 Use BIThub to discuss the protocol, ask questions, share templates, propose improvements, and report implementation experiences.
 
 - BIThub forum: <https://hub.bitwiki.org/>
-- BIThub Guides: <https://hub.bitwiki.org/c/platform/guides/28>
-- BITwiki: <https://bitwiki.org/>
 
 ## 11. Contributing
 

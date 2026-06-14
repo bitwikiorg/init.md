@@ -61,12 +61,15 @@ function App() {
           <div>
             <p className="font-semibold">init.md</p>
             <p className="mt-2 max-w-2xl text-sm text-background/75">
-              Copy init instructions and templates for your target. Keep only what applies.
+              Copy init.md or an init template. Keep only what applies to the target.
             </p>
           </div>
           <nav className="flex flex-wrap gap-3 text-sm md:justify-end" aria-label="Footer links">
             <a className="underline-offset-4 hover:underline" href="https://github.com/bitwikiorg/init.md" target="_blank" rel="noreferrer">
               GitHub
+            </a>
+            <a className="underline-offset-4 hover:underline" href="https://hub.bitwiki.org/" target="_blank" rel="noreferrer">
+              BIThub
             </a>
           </nav>
           </div>

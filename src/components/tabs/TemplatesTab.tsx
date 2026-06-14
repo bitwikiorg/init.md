@@ -1,11 +1,12 @@
 import { createElement, useCallback, useMemo, useState } from "react"
 import { marked } from "marked"
 import { toast } from "sonner"
-import { CaretLeft, CaretRight, CheckCircle, Copy } from "@phosphor-icons/react"
+import { CaretLeft, CaretRight, CheckCircle, Copy, FileText } from "@phosphor-icons/react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { templates } from "@/data/templates"
+import rootProtocolContent from "../../../init.md?raw"
 
 function stripFrontmatter(content: string) {
   return content.replace(/^---\n[\s\S]*?\n---\n?/, "")
@@ -41,7 +42,7 @@ export function TemplatesTab() {
     try {
       await navigator.clipboard.writeText(content)
       setCopiedStates((prev) => ({ ...prev, [id]: true }))
-      toast.success("Canonical Markdown copied")
+      toast.success("Markdown copied")
       setTimeout(() => {
         setCopiedStates((prev) => ({ ...prev, [id]: false }))
       }, 2000)
@@ -62,9 +63,9 @@ export function TemplatesTab() {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h3 className="text-2xl font-bold">Canonical Templates</h3>
+          <h3 className="text-2xl font-bold">Copy init files</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-            Preview templates from templates/. Copy Markdown and paste it into your init workflow.
+            Copy init.md for the root procedure. Copy a template when the target needs more specific init instructions.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -79,6 +80,35 @@ export function TemplatesTab() {
           </Button>
         </div>
       </div>
+
+      <Card className="rounded-md border-2 shadow-none">
+        <CardHeader>
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start">
+            <div className="flex items-start gap-3">
+              <FileText size={28} className="mt-1 shrink-0 text-primary" />
+              <div>
+                <Badge variant="secondary" className="mb-2 rounded-sm">
+                  Root
+                </Badge>
+                <CardTitle className="text-2xl">init.md</CardTitle>
+                <CardDescription className="mt-3 max-w-3xl text-sm leading-6 sm:text-base">
+                  The root initialization procedure. Copy this when you need the general inspect, determine, create,
+                  configure, validate, and report flow.
+                </CardDescription>
+              </div>
+            </div>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => copyToClipboard(rootProtocolContent, "root-protocol")}
+              className="shrink-0 lg:justify-self-end"
+            >
+              {copiedStates["root-protocol"] ? <CheckCircle size={16} /> : <Copy size={16} />}
+              Copy init.md
+            </Button>
+          </div>
+        </CardHeader>
+      </Card>
 
       <Card className="overflow-hidden rounded-md border-2 shadow-none">
         <CardHeader>
@@ -114,7 +144,7 @@ export function TemplatesTab() {
                 className="shrink-0"
               >
                 {copiedStates[template.id] ? <CheckCircle size={16} /> : <Copy size={16} />}
-                Copy Markdown
+                Copy template
               </Button>
             </div>
           </div>
@@ -148,9 +178,7 @@ export function TemplatesTab() {
           </div>
 
           <div className="rounded-md border bg-card p-4">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h4 className="text-lg font-semibold">Rendered Markdown</h4>
-            </div>
+            <h4 className="mb-4 text-lg font-semibold">Template preview</h4>
             <div className="markdown-surface" dangerouslySetInnerHTML={{ __html: renderedTemplate }} />
           </div>
         </CardContent>

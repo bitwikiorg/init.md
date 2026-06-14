@@ -21,11 +21,11 @@ Templates define concrete initialization patterns for specific targets.
 
 - Static Vite and React website.
 - GitHub Pages deployment.
-- Template browser with copy-to-clipboard behavior.
+- Root init.md and template browser with copy-to-clipboard behavior.
 - Canonical Markdown files under `templates/` imported with Vite raw imports.
 - Template metadata parsed from Markdown frontmatter.
 - Build-time template metadata check.
-- Visible GitHub, BIThub, BIThub Guides, and BITwiki links.
+- GitHub and BIThub links limited to header and footer.
 
 ## Non-Goals
 

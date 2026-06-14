@@ -1,4 +1,4 @@
-import { Stack } from "@phosphor-icons/react"
+import { ChatsCircle, GithubLogo, Stack } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 
 interface AppHeaderProps {
@@ -23,6 +23,18 @@ export function AppHeader({ onSelectTab }: AppHeaderProps) {
           <Button type="button" variant="ghost" size="sm" onClick={() => onSelectTab("templates")}>
             <Stack size={16} />
             Templates
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <a href="https://github.com/bitwikiorg/init.md" target="_blank" rel="noreferrer">
+              <GithubLogo size={16} />
+              GitHub
+            </a>
+          </Button>
+          <Button variant="default" size="sm" asChild>
+            <a href="https://hub.bitwiki.org/" target="_blank" rel="noreferrer">
+              <ChatsCircle size={16} />
+              BIThub
+            </a>
           </Button>
         </nav>
       </div>

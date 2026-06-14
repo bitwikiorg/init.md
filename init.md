@@ -1,8 +1,34 @@
-# init.md — General Operational Initialization Protocol
+# init.md - General Operational Initialization Protocol
 
-`init.md` is a human- and machine-readable procedure for inspecting a target, determining what it requires, applying the appropriate initialization pattern, validating the result, and reporting its operational state.
+`init.md` is a general initialization procedure that inspects a target, determines what it needs to become operational, creates and configures what applies, validates the result, and reports its operational state.
 
-It is not one fixed scaffold. It does not assume that every target is a server, repository, AI agent, application, or development project. Templates provide concrete initialization patterns for specific target types, while this root protocol remains general.
+`init.md` is a target-specific initialization protocol for making a project, agent, service, server, workspace, or other system operational.
+
+It does not impose one universal scaffold. It first inspects what already exists, identifies the target's purpose and requirements, determines what is missing or misconfigured, and then creates or configures only what applies.
+
+Depending on the target, this may involve:
+
+- creating directories or files;
+- generating project documentation;
+- adding an `AGENTS.md` file;
+- configuring dependencies, tools, services, or environments;
+- establishing startup procedures;
+- creating snapshots or context files;
+- defining tests or readiness checks.
+
+It then validates that the initialized target works as intended and reports:
+
+- what was inspected;
+- what was created or changed;
+- what was successfully validated;
+- what remains incomplete or blocked;
+- whether the target is operational.
+
+Its core sequence is:
+
+**Inspect -> Determine -> Create -> Configure -> Validate -> Report**
+
+Templates provide complete concrete initialization procedures for different kinds of targets, while the canonical `init.md` defines the general method.
 
 ## 1. Purpose
 
@@ -206,9 +232,9 @@ The procedure should:
 
 This is not a restrictive safety framework. It is basic initialization correctness.
 
-## Conventions
+## 9. Instruction Vocabulary
 
-Use a small, general vocabulary for structured steps:
+Use a small vocabulary when a step needs structure:
 
 - `description` — what the step accomplishes;
 - `condition` — when the step applies;
@@ -219,26 +245,15 @@ Use a small, general vocabulary for structured steps:
 - `source` — evidence or input used;
 - `status` — resulting operational state.
 
-Do not require every field in every step. Do not make shell commands the default representation. Templates may provide commands when commands are appropriate.
+Do not require every field in every step. Do not make shell commands the default representation. Use commands only when commands are the right validation or configuration tool.
 
-## Template System
+## 10. Templates
 
-Templates are the concrete layer. They specialize the general procedure for a target category, mode, or operating context.
+Templates are complete concrete initialization procedures for target categories, modes, or operating contexts.
 
-Each template should declare metadata:
+Use a template when it better matches the target than the root procedure alone. A template may be used directly, adapted, or combined with compatible sections from another template when the target requires it.
 
-```yaml
-name:
-target:
-purpose:
-mode:
-creates:
-configures:
-validates:
-optional_outputs:
-```
-
-Metadata describes likely behavior. It does not force universal outputs.
+Template source files may contain site metadata for indexing and display, but the usable instruction body is the protocol content itself.
 
 ## Final Product Statement
 
@@ -246,6 +261,6 @@ Metadata describes likely behavior. It does not force universal outputs.
 
 It is a general procedure for determining what a target needs in order to become operational.
 
-Templates provide concrete initialization patterns for different targets.
+Templates provide complete concrete initialization procedures for different targets.
 
 Inspect what exists. Determine what is needed. Create what applies. Configure what is required. Validate the result. Report what became operational.

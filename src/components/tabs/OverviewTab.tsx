@@ -47,26 +47,27 @@ export function OverviewTab() {
     <div className="space-y-8">
       <Card className="rounded-md border-2 shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl">A procedure, not a scaffold</CardTitle>
+          <CardTitle className="text-2xl">What init.md is</CardTitle>
           <CardDescription className="text-base leading-7">
-            Copy a practical init instruction, not source metadata. Use the root flow or a target-specific template.
+            A target-specific initialization protocol for making a project, agent, service, server, workspace, or other
+            system operational.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
           <div className="space-y-4 text-sm leading-7 text-muted-foreground sm:text-base">
             <p>
-              init.md helps determine what a target needs to become ready. A target might be a repository, an agent
-              workspace, a server, a research directory, or a service being restored in a new environment.
+              It does not impose one universal scaffold. It inspects what exists, identifies the target's purpose and
+              requirements, determines what is missing or misconfigured, then creates or configures only what applies.
             </p>
             <p>
-              The target decides the work. A server may need host checks. A project may need build commands. An agent may
-              need instructions and tool boundaries. A small target may need one file and one validation step.
+              Templates are complete concrete procedures for common targets. Use the root protocol for the general
+              method, or copy the template that matches the target.
             </p>
           </div>
           <div className="rounded-md border bg-background p-4">
             <div className="mb-3 flex items-center gap-2 font-semibold">
               <Files size={18} />
-              Possible targets
+              Targets
             </div>
             <div className="flex flex-wrap gap-2">
               {targetExamples.map((target) => (
@@ -105,7 +106,7 @@ export function OverviewTab() {
         <CardContent className="grid gap-4 text-sm leading-6 text-background/80 md:grid-cols-2">
           <div className="flex gap-3">
             <CheckCircle className="mt-0.5 shrink-0" size={18} />
-            <p>Success requires a validation step tied to the target.</p>
+            <p>Success requires a validation step tied to the target's intended operation.</p>
           </div>
           <div className="flex gap-3">
             <CheckCircle className="mt-0.5 shrink-0" size={18} />

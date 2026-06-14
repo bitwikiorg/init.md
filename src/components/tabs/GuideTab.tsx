@@ -9,12 +9,12 @@ const workflow = [
     body: "Name what init.md is being used on, where it lives, and what ready means for that target.",
   },
   {
-    title: "Choose root or template",
-    body: "Use the root instruction for general init. Use a template instruction when the target has a clearer shape.",
+    title: "Choose init.md or a template",
+    body: "Use init.md for the general method. Use a complete template when the target has a clear type.",
   },
   {
-    title: "Copy only useful init text",
-    body: "Copy the exact file, then remove instructions that do not apply before using it on the target.",
+    title: "Copy the usable body",
+    body: "Copy buttons paste the complete Markdown instructions, not the label data used by this page.",
   },
   {
     title: "Run the init procedure",
@@ -31,10 +31,10 @@ const workflow = [
 ]
 
 const examples = [
-  "Use the root init instruction to initialize this target. Apply only what fits.",
-  "Use the development-project init instruction to initialize this repository.",
-  "Use the dry-run init instruction and report proposed work without changing files.",
-  "Use the agent init instruction only if this target needs agent guidance.",
+  "Use the complete init.md procedure to inspect this target, initialize what applies, validate it, and report status.",
+  "Use the complete development project init template to initialize this repository and validate the developer workflow.",
+  "Use the complete dry-run init template to inspect this target and report proposed init work without changing files.",
+  "Use the complete agent init template only if this target needs agent instructions, tools, prompts, or state.",
 ]
 
 export function GuideTab() {
@@ -53,7 +53,7 @@ export function GuideTab() {
         <CardHeader>
           <CardTitle className="text-2xl">Use init.md directly</CardTitle>
           <CardDescription className="text-base leading-7">
-            Start with the target. Copy the plain instruction that fits, then keep only the init work that applies.
+            Start with the target. Copy init.md or a complete template, then run the procedure against that target.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -85,7 +85,7 @@ export function GuideTab() {
               for agent instructions, and server for host or deployment readiness.
             </p>
             <p>
-              If no template fits, use the root instruction and write a short target-specific init plan before making changes.
+              If no template fits, copy init.md and write a short target-specific init plan before making changes.
             </p>
           </CardContent>
         </Card>

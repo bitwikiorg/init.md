@@ -92,9 +92,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "minimal",
     title: "Minimal",
-    summary: "Small init pass for one clear gap.",
+    summary: "Complete init procedure for one clear gap.",
     description:
-      "Inspect a small target, add only the missing requirement, validate it, and report status.",
+      "A complete procedure for inspecting a small target, adding only the missing requirement, validating it, and reporting status.",
     category: "General",
     sourcePath: "templates/minimal_init_protocol.md",
     sourceUrl: sourceUrl("templates/minimal_init_protocol.md"),
@@ -106,9 +106,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "dry-run",
     title: "Dry Run",
-    summary: "Plan init work without changing files or systems.",
+    summary: "Complete no-change init planning procedure.",
     description:
-      "Inspect the target, list required work, and report what would become operational.",
+      "A complete procedure for inspecting the target, listing required work, and reporting what would become operational without changes.",
     category: "General",
     sourcePath: "templates/dry_run_init_protocol.md",
     sourceUrl: sourceUrl("templates/dry_run_init_protocol.md"),
@@ -120,9 +120,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "development-project",
     title: "Development Project",
-    summary: "Init template for repositories and software projects.",
+    summary: "Complete init procedure for software projects.",
     description:
-      "Inspect project shape, choose the right artifacts and commands, then validate development readiness.",
+      "A complete procedure for inspecting project shape, choosing artifacts and commands, and validating development readiness.",
     category: "Target-specific",
     sourcePath: "templates/development_project_init_protocol.md",
     sourceUrl: sourceUrl("templates/development_project_init_protocol.md"),
@@ -134,9 +134,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "agent",
     title: "Agent",
-    summary: "Init template for agent instructions and tool boundaries.",
+    summary: "Complete init procedure for agent targets.",
     description:
-      "Define what the agent target needs, keep valid instructions, add missing parts, and validate readiness.",
+      "A complete procedure for defining what the agent target needs, preserving valid instructions, adding missing parts, and validating readiness.",
     category: "Target-specific",
     sourcePath: "templates/agent_init_protocol.md",
     sourceUrl: sourceUrl("templates/agent_init_protocol.md"),
@@ -148,9 +148,9 @@ export const templates: TemplateDefinition[] = [
   {
     id: "server",
     title: "Server",
-    summary: "Init template for server and deployment readiness.",
+    summary: "Complete init procedure for server readiness.",
     description:
-      "Handle host checks, services, networking, and deployment validation in a server-specific flow.",
+      "A complete procedure for host checks, services, networking, and deployment validation in a server-specific flow.",
     category: "Target-specific",
     sourcePath: "templates/server_init_protocol.md",
     sourceUrl: sourceUrl("templates/server_init_protocol.md"),

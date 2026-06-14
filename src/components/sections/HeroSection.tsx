@@ -17,15 +17,15 @@ export function HeroSection({ onSelectTab }: HeroSectionProps) {
               BITwiki open protocol
             </p>
             <h2 className="text-4xl font-black leading-tight tracking-normal text-foreground sm:text-5xl lg:text-6xl">
-              Initialize what the target actually needs.
+              Make the target operational.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              Copy a plain init instruction for the target. Use the root instruction for general init, or a template
-              instruction when the target is more specific.
+              init.md inspects a target, determines what it needs, creates and configures what applies, validates the
+              result, and reports its operational state.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" type="button" onClick={() => onSelectTab("templates")}>
-                Copy instructions
+                Copy templates
                 <ArrowRight size={18} />
               </Button>
               <Button size="lg" variant="outline" type="button" onClick={() => onSelectTab("quickstart")}>
@@ -49,7 +49,7 @@ export function HeroSection({ onSelectTab }: HeroSectionProps) {
               ))}
             </div>
             <p className="mt-4 border-t border-border pt-4 text-sm leading-6 text-muted-foreground">
-              Use this sequence to decide what init instructions, files, or checks actually apply.
+              The core sequence is Inspect, Determine, Create, Configure, Validate, Report.
             </p>
           </div>
         </div>

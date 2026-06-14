@@ -5,11 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const relationships = [
   {
     title: "Root protocol",
-    body: "Copy the root instruction when you need the general inspect, determine, create, configure, validate, and report flow.",
+    body: "Copy init.md when you need the complete general method: inspect, determine, create, configure, validate, report.",
   },
   {
     title: "Template",
-    body: "Copy a template instruction when the target is a project, agent, server, dry run, or small gap.",
+    body: "Copy a complete template when the target is a project, agent, server, dry run, or small scoped gap.",
   },
   {
     title: "Generated output",
@@ -35,9 +35,9 @@ export function ContextTab() {
     <div className="space-y-8">
       <Card className="rounded-md border-2 shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl">The target determines the implementation</CardTitle>
+          <CardTitle className="text-2xl">The target determines the work</CardTitle>
           <CardDescription className="text-base leading-7">
-            Useful init work depends on the target. init.md stays general; templates hold the target-specific details.
+            init.md is the method. Templates are complete target-specific procedures. Neither one forces universal files.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">

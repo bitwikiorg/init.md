@@ -69,7 +69,7 @@ Create an AGENTS.md file only if this project would benefit from one.
 
 ## 8. Usage For Developers
 
-This repository preserves a static Vite and React website for browsing init templates and copying practical init instructions.
+This repository preserves a static Vite and React website for browsing templates and copying canonical Markdown content.
 
 Common commands:
 
@@ -83,7 +83,7 @@ The build runs `scripts/check-templates.mjs` before compiling the site. That che
 
 ## 9. Website
 
-The public site is deployed with GitHub Pages from the existing Vite build. It uses the Markdown files under `templates/` for metadata and keeps copy-to-clipboard behavior focused on concise init instructions, not raw template source.
+The public site is deployed with GitHub Pages from the existing Vite build. It renders the Markdown files under `templates/` as the canonical source and keeps copy-to-clipboard behavior for root `init.md` and complete usable template bodies.
 
 GitHub Pages must use **Build and deployment > Source: GitHub Actions** for this repository. Do not use **Deploy from a branch > root**, because that serves the unbuilt Vite source files and the browser will try to load `/src/main.tsx` directly.
 

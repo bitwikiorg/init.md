@@ -86,7 +86,7 @@
         "globals": "^17.7.0",
         "tailwindcss": "^4.3.3",
         "typescript": "~7.0.2",
-        "typescript-eslint": "^8.65.0",
+        "typescript-eslint": "^8.70.1",
         "vite": "^8.3.1"
     },
     "workspaces": {
